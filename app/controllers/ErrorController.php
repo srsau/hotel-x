@@ -2,11 +2,11 @@
 
 namespace App\Controllers;
 
-class AboutController
+class ErrorController
 {
-    public function about()
+    public function notFound()
     {
-        $view = __DIR__ . '/../views/about.php';
+        $view = __DIR__ . '/../views/404.php';
         require __DIR__ . '/../views/layout.php';
     }
 }
