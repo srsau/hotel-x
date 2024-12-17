@@ -8,6 +8,6 @@ spl_autoload_register(function ($class) {
     if (file_exists($file)) {
         require_once $file;
     } else {
-        throw new Exception("Class {$class} not found!");
+        throw new Exception("Class {$class} not found! ( $file )");
     }
 });
