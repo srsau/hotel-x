@@ -26,7 +26,7 @@ jobs:
       - name: Copy Files to VM
         run: |
           echo "Copying files to the VM..."
-          scp -o StrictHostKeyChecking=no -r ./hotel/* ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/var/www/html/
+          scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/var/www/html/
 
       # Step 4: Run SQL script on VM
       - name: Execute SQL Script
