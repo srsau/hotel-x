@@ -22,19 +22,26 @@ jobs:
           ssh-private-key: |
             ${{ secrets.VM_SSH_KEY }}
 
-      # Step 3: Deploy project files to VM
+      # Step 3: Delete old files from VM
+      - name: Delete Old Files from VM
+        run: |
+          echo "Deleting old files from the VM..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
+            "rm -rf /var/www/html/*"
+
+      # Step 4: Deploy new files to VM
       - name: Copy Files to VM
         run: |
           echo "Copying files to the VM..."
           scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/var/www/html/
 
-      # Step 4: Run SQL script on VM
-      - name: Execute SQL Script
-        run: |
-          echo "Running SQL script on the remote database..."
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
-          "mysql -u ${{ secrets.DB_USER }} -p'${{ secrets.DB_PASS }}' ${{ secrets.DB_NAME }} < /var/www/html/hotel/bootstrap.sql"
+      # # Step 5: Run SQL script on VM
+      # - name: Execute SQL Script
+      #   run: |
+      #     echo "Running SQL script on the remote database..."
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
+      #     "mysql -u ${{ secrets.DB_USER }} -p'${{ secrets.DB_PASS }}' ${{ secrets.DB_NAME }} < /var/www/html/hotel/bootstrap.sql"
 
-      # Step 5: Confirmation
+      # Step 6: Confirmation
       - name: Deployment Complete
         run: echo "Deployment to VM completed successfully!"
