@@ -29,7 +29,7 @@ echo "Request URI: " . $requestUri . "<br>"; // Debugging: Check the URI
 // Check if route exists
 if (array_key_exists($requestUri, $routes)) {
     $action = explode('@', $routes[$requestUri]);
-    $controller = 'App\\Controllers\\' . $action[0];
+    $controller = 'app\\controllers\\' . $action[0];
     $method = $action[1];
 
     echo "Controller: $controller, Method: $method<br>"; // Debugging: Check controller and method
@@ -39,7 +39,7 @@ if (array_key_exists($requestUri, $routes)) {
 } else {
     http_response_code(404);
     $action = explode('@', $routes['/404']);
-    $controller = 'App\\Controllers\\' . $action[0];
+    $controller = 'app\\controllers\\' . $action[0];
     $method = $action[1];
     (new $controller)->$method();
 }
