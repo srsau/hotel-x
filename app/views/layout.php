@@ -39,7 +39,7 @@
                             <a class="nav-link" href="/logout">Logout</a>
                         </li>
                         <!-- <?php var_dump($_SESSION['user']) ?> -->
-                        <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                        <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin">Admin</a>
                             </li>
