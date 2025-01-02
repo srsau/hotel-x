@@ -6,7 +6,13 @@
     <title>Hotel X</title>
 </head>
 <body>
-    <h1>Welcome</h1>  
+    <h1>Welcome to Hotel X</h1>
+    <h2>Available Rooms</h2>
+    <ul>
+        <?php foreach ($rooms as $room): ?>
+            <li><?php echo htmlspecialchars($room['name']); ?></li>
+        <?php endforeach; ?>
+    </ul>
     <a href="/about">About Us</a>
 </body>
 </html>

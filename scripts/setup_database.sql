@@ -13,3 +13,13 @@ CREATE TABLE users (
 INSERT INTO users (username, password, role) VALUES 
 ('customer', 'customer', 'customer'), 
 ('admin', 'admin', 'admin');
+
+DROP TABLE IF EXISTS rooms;
+CREATE TABLE rooms (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO rooms (name) VALUES 
+('Room-1'), 
+('Room-2');
