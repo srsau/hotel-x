@@ -28,14 +28,13 @@ jobs:
           echo "Deleting old files from the VM..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
             "rm -rf /var/www/html/*"
-
       - name: Set up environment variables
         run: |
-           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
-            echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> /var/www/html/.env
-            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> /var/www/html/.env
-            EOF
-            
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
+          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> /var/www/html/.env
+          echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> /var/www/html/.env
+          EOF
+
       # Step 4: Deploy new files to VM
       - name: Copy Files to VM
         run: |
