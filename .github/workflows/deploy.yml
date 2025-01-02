@@ -46,9 +46,9 @@ jobs:
         run: |
           echo "Setting file permissions..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
-          chown -R www-data:www-data /var/www/html/public/images
+          sudo chown -R www-data:www-data /var/www/html/public/images
           # Set appropriate permissions for the images folder
-          chmod -R 775 /var/www/html/public/images
+          sudo chmod -R 775 /var/www/html/public/images
           EOF
 
       # Step 6: Run SQL script on VM
