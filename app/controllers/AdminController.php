@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use app\Middleware\AuthMiddleware;
+use app\middleware\AuthMiddleware;
 
 class AdminController
 {
