@@ -166,7 +166,7 @@ class RoomController
             $targetDir = __DIR__ . '/../../public/images/';
             $targetFile = $targetDir . basename($file['name']);
             move_uploaded_file($file['tmp_name'], $targetFile);
-            return '/images/' . basename($file['name']);
+            return '/images/' . rawurlencode(basename($file['name']));
         }
         return $existingImage;
     }
@@ -179,7 +179,7 @@ class RoomController
                 $targetDir = __DIR__ . '/../../public/images/';
                 $targetFile = $targetDir . basename($name);
                 move_uploaded_file($files['tmp_name'][$key], $targetFile);
-                $uploadedImages[] = '/images/' . basename($name);
+                $uploadedImages[] = '/images/' . rawurlencode(basename($name));
             }
         }
         return json_encode(array_merge(json_decode($existingImages, true) ?? [], $uploadedImages));
