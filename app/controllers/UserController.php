@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use app\Database;
 use PDO;
-use app\Middleware\AuthMiddleware;
+use app\middleware\AuthMiddleware;
 
 require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
 
