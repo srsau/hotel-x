@@ -41,13 +41,23 @@ jobs:
           echo "Copying files to the VM..."
           scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/var/www/html/
 
-      # Step 5: Run SQL script on VM
+      # Step 5: Adjust Permissions for Images Folder
+      - name: Set File Permissions
+        run: |
+          echo "Setting file permissions..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
+          chown -R www-data:www-data /var/www/html/public/images
+          # Set appropriate permissions for the images folder
+          chmod -R 775 /var/www/html/public/images
+          EOF
+
+      # Step 6: Run SQL script on VM
       - name: Execute SQL Script
         run: |
           echo "Running SQL script on the remote database..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
           "mysql -u ${{ secrets.DB_USER }} -p'${{ secrets.DB_PASS }}' < /var/www/html/scripts/setup_database.sql"
 
-      # Step 6: Confirmation
+      # Step 7: Confirmation
       - name: Deployment Complete
         run: echo "Deployment to VM completed successfully!"
