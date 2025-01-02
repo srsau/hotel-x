@@ -1,6 +1,11 @@
 <div class="container-md mt-4">
     <h2 class="text-center mb-4">Our Rooms</h2>
     <div class="row">
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+            <div class="col-12 mb-4 text-end">
+                <a href="/room/create" class="btn btn-success">Create Room</a>
+            </div>
+        <?php endif; ?>
         <?php foreach ($rooms as $room): ?>
             <div class="col-md-6 mb-4">
                 <div class="card">
@@ -17,6 +22,9 @@
                             <div>
                                 <a href="/room?id=<?php echo $room['id']; ?>" class="btn btn-primary">Details</a>
                                 <a href="#" class="btn btn-secondary">Book</a>
+                                <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+                                    <a href="/room/edit?id=<?php echo $room['id']; ?>" class="btn btn-warning">Edit</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

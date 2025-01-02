@@ -12,6 +12,8 @@ $routes = [
     '/verify' => 'UserController@verify',
     '/admin' => 'AdminController@index',
     '/room' => 'RoomController@details',
+    '/room/create' => 'RoomController@create',
+    '/room/edit' => 'RoomController@edit',
 ];
 
 return $routes;
