@@ -10,6 +10,7 @@ $routes = [
     '/login' => 'UserController@login',
     '/logout' => 'UserController@logout',
     '/verify' => 'UserController@verify',
+    '/admin' => 'AdminController@index',
 ];
 
 return $routes;

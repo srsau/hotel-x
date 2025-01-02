@@ -38,6 +38,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Logout</a>
                         </li>
+                        <!-- <?php var_dump($_SESSION['user']) ?> -->
                         <?php if ($_SESSION['user']['role'] === 'admin'): ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin">Admin</a>
