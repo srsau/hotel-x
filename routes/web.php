@@ -9,6 +9,7 @@ $routes = [
     '/register' => 'UserController@register',
     '/login' => 'UserController@login',
     '/logout' => 'UserController@logout',
+    '/verify' => 'UserController@verify',
 ];
 
 return $routes;

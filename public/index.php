@@ -1,15 +1,10 @@
 <?php
 
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 1); //todo check
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
-}
-
-// Simulate login state for testing
-if (!isset($_SESSION['user']) && !isset($_GET['logged_out'])) {
-    $_SESSION['user'] = 'testuser'; 
 }
 
 echo "Session ID: " . session_id();
@@ -22,7 +17,6 @@ require_once __DIR__ . '/../autoload.php';
 // Load routes
 $routes = require_once __DIR__ . '/../routes/web.php';
 print_r($routes); // Debugging: Check if routes are loaded correctly
-
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 echo "Request URI: " . $requestUri . "<br>"; // Debugging: Check the URI
 

@@ -47,7 +47,10 @@ class UserController
 
             $this->sendVerificationEmail($email, $verification_code);
 
-            echo "Registration successful! Please check your email to verify your account.";
+            $message = "Registration successful! Please check your email to verify your account.";
+            $title = 'Registration Successful';
+            $view = __DIR__ . '/../views/message.php';
+            require __DIR__ . '/../views/layout.php';
         } else {
             $view = __DIR__ . '/../views/register.php';
             require __DIR__ . '/../views/layout.php';
@@ -65,8 +68,11 @@ class UserController
 
             $to = 'ctinsergiu@gmail.com';
             $nume = 'Daw Project';
-            $message = "Please click the link to verify your email: <a href='http://hotel-x.francecentral.cloudapp.azure.com/verify?code=$verification_code'>Verify Email</a>";
-            
+
+            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+            $verification_link = $base_url . "/verify?code=$verification_code";
+            $message = "Please click the link to verify your email: <a href='$verification_link'>Verify Email</a>";
+
             $mail->SMTPSecure = "ssl";
             $mail->Host       = "smtp.gmail.com";
             $mail->Port       = 465;
@@ -90,6 +96,7 @@ class UserController
 
     public function verify()
     {
+        $message = "Invalid verification code.";
         if (isset($_GET['code'])) {
             $verification_code = $_GET['code'];
 
@@ -108,27 +115,30 @@ class UserController
                 $stmt->bindParam(':verification_code', $verification_code);
                 $stmt->execute();
 
-                echo "Email verified successfully! You can now log in.";
-            } else {
-                echo "Invalid verification code.";
+                $message = "Email verified successfully! You can now log in.";
             }
-        } else {
-            echo "Invalid verification code.";
         }
+        $title = 'Verify Account';
+        $view = __DIR__ . '/../views/verify.php';
+        require __DIR__ . '/../views/layout.php';
     }
 
     public function login()
     {
+        $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = $_POST['username'];
+            $email = $_POST['email'];
             $password = $_POST['password'];
 
             $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
-            $stmt->bindParam(':username', $username);
+            $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+            echo '<pre>';
+            var_dump($user);
+            echo '</pre>';
+            
             if ($user && password_verify($password, $user['password'])) {
                 if ($user['verified'] == 1) {
                     $_SESSION['user'] = [
@@ -137,17 +147,17 @@ class UserController
                         'name' => $user['name'],
                         'username' => $user['username']
                     ];
-                    header('Location: /account');
+                    header('Location: /');
                 } else {
-                    echo "Please verify your email before logging in.";
+                    $error = "Please verify your email before logging in.";
                 }
             } else {
-                echo "Invalid credentials";
+                $error = "Invalid credentials";
             }
-        } else {
-            $view = __DIR__ . '/../views/login.php';
-            require __DIR__ . '/../views/layout.php';
         }
+        $title = 'Login';
+        $view = __DIR__ . '/../views/login.php';
+        require __DIR__ . '/../views/layout.php';
     }
 
     public function logout()
