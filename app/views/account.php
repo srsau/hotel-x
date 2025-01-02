@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,7 @@
 </head>
 <body>
     <h2>My Account</h2>
-    <p>Welcome to your account page, <?php echo $_SESSION['user']; ?>!</p>
+    <p>Welcome to your account page, <?php echo $_SESSION['user']['name']; ?>!</p>
+    <p>Email: <?php echo $_SESSION['user']['email']; ?></p>
 </body>
 </html>

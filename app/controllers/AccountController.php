@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Middleware\AuthMiddleware;
+use app\Middleware\AuthMiddleware;
 
 class AccountController
 {
