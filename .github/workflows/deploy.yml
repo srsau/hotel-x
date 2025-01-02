@@ -31,6 +31,7 @@ jobs:
 
       - name: Set up environment variables
         run: |
+          touch /var/www/html/.env
           echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" | sudo tee -a /var/www/html/.env > /dev/null
           echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" | sudo tee -a /var/www/html/.env > /dev/null
 
