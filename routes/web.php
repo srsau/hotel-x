@@ -11,6 +11,7 @@ $routes = [
     '/logout' => 'UserController@logout',
     '/verify' => 'UserController@verify',
     '/admin' => 'AdminController@index',
+    '/room' => 'RoomController@details',
 ];
 
 return $routes;

@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use app\Database; 
+use app\Database;
 use PDO;
 
 class HomeController
@@ -10,7 +10,7 @@ class HomeController
     public function index()
     {
         $db = Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT name FROM rooms");
+        $stmt = $db->query("SELECT rooms.id, rooms.name, rooms.description, rooms.image_url, rooms.capacity, GROUP_CONCAT(facilities.name SEPARATOR ', ') as facilities FROM rooms LEFT JOIN room_facilities ON rooms.id = room_facilities.room_id LEFT JOIN facilities ON room_facilities.facility_id = facilities.id GROUP BY rooms.id");
         $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $title = 'Home - Hotel X';
