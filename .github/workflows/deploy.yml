@@ -15,11 +15,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up environment variables
-        run: |
-          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> .env
-          echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
-
       # Step 2: Set up SSH access
       - name: Setup SSH Key
         uses: webfactory/ssh-agent@v0.5.4
@@ -33,6 +28,11 @@ jobs:
           echo "Deleting old files from the VM..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
             "rm -rf /var/www/html/*"
+
+      - name: Set up environment variables
+        run: |
+          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> /var/www/html/.env
+          echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> /var/www/html/.env
 
       # Step 4: Deploy new files to VM
       - name: Copy Files to VM
