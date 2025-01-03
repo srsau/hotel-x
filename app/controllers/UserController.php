@@ -16,7 +16,6 @@ class UserController
 {
     public function __construct()
     {
-        // Apply middleware to protect certain actions
         if ($_SERVER['REQUEST_URI'] === '/logout') {
             AuthMiddleware::handle();
         }
