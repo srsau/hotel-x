@@ -122,8 +122,17 @@ class UserController
                         'username' => $user['username'],
                         'role' => $user['role']
                     ];
-                    header('Location: /');
-                } else {
+                    echo '<script>
+                    const currentStep = localStorage.getItem("currentStep");
+                    if (currentStep) {
+                        localStorage.removeItem("currentStep");
+                        window.location.href = "/book?step=" + currentStep;
+                    } else {
+                        window.location.href = "/book";
+                    }
+                </script>';
+                exit();
+            } else {
                     $error = "Please verify your email before logging in.";
                 }
             } else {

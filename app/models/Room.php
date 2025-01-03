@@ -101,20 +101,42 @@ class Room
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public static function getAvailableRooms($checkInDate, $checkOutDate)
+
+    public static function getAvailableRooms($startDate, $endDate, $guests)
     {
         $db = Database::getInstance()->getConnection();
         $stmt = $db->prepare("
-            SELECT rooms.*, (rooms.available_rooms - COUNT(bookings.id)) AS available_rooms
-            FROM rooms
-            LEFT JOIN bookings ON rooms.id = bookings.room_id
-            AND bookings.check_in_date <= :check_out_date
-            AND bookings.check_out_date >= :check_in_date
-            GROUP BY rooms.id
-            HAVING available_rooms > 0
+            SELECT 
+                r.id, 
+                r.name, 
+                r.description, 
+                r.image_url, 
+                r.price_per_night, 
+                r.capacity, 
+                r.floor, 
+                r.available_rooms - IFNULL((
+                    SELECT COUNT(*)
+                    FROM bookings b
+                    WHERE b.room_id = r.id
+                    AND b.check_in_date < :end_date 
+                    AND b.check_out_date > :start_date
+                    AND b.status = 'valid'
+                ), 0) AS available,
+                GROUP_CONCAT(DISTINCT f.name SEPARATOR ', ') AS facilities
+            FROM 
+                rooms r
+            LEFT JOIN room_facilities rf ON r.id = rf.room_id
+            LEFT JOIN facilities f ON rf.facility_id = f.id
+            WHERE 
+                r.capacity >= :guests
+            GROUP BY 
+                r.id
+            HAVING 
+                available > 0;
         ");
-        $stmt->bindParam(':check_in_date', $checkInDate, PDO::PARAM_STR);
-        $stmt->bindParam(':check_out_date', $checkOutDate, PDO::PARAM_STR);
+        $stmt->bindParam(':start_date', $startDate);
+        $stmt->bindParam(':end_date', $endDate);
+        $stmt->bindParam(':guests', $guests, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

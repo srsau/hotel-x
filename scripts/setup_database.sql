@@ -14,7 +14,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,7 +45,7 @@ CREATE TABLE bookings (
     room_id INT NOT NULL,
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
-    addons JSON DEFAULT NULL, 
+    addons JSON DEFAULT '[]',  -- Default to an empty array
     total_price DECIMAL(10, 2) NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -78,6 +77,8 @@ CREATE TABLE addons (
     name VARCHAR(100) NOT NULL UNIQUE,
     price DECIMAL(10, 2) NOT NULL 
 );
+
+ALTER TABLE bookings ADD COLUMN status ENUM('valid', 'canceled') DEFAULT 'valid';
 
 -- Inserări de test pentru camere
 INSERT INTO rooms (name, description, image_url, images, price_per_night, capacity, floor, popular, available_rooms) VALUES
@@ -113,5 +114,6 @@ INSERT INTO addons (name, price) VALUES
 
 -- Inserări de test pentru rezervări
 INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, addons, total_price) VALUES
-(1, 1, '2025-01-10', '2025-01-12', '{"breakfast": true, "lunch": false, "late_checkout": true}', 270.00),
-(1, 2, '2025-01-15', '2025-01-18', '{"breakfast": false, "lunch": true, "late_checkout": false}', 390.00);
+(1, 1, '2025-01-10', '2025-01-12', '[1, 3]', 270.00),
+(1, 2, '2025-01-15', '2025-01-18', '[2]', 390.00);
+
