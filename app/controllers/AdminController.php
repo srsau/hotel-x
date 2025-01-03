@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use app\middleware\AuthMiddleware;
+use app\models\Booking;
 
 class AdminController
 {
@@ -21,4 +22,14 @@ class AdminController
         $view = __DIR__ . '/../views/admin.php';
         require __DIR__ . '/../views/layout.php';
     }
+
+    public function bookings()
+    {
+        $bookings = Booking::getAllBookings();
+
+        $title = 'All Bookings';
+        $view = __DIR__ . '/../views/admin_bookings.php';
+        require __DIR__ . '/../views/layout.php';
+    }
 }
+?>

@@ -57,5 +57,23 @@ class Booking
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
     }
-}
+
+    public static function getAllBookings()
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            SELECT 
+                bookings.*, 
+                rooms.name as room_name, 
+                users.name as user_name, 
+                (SELECT GROUP_CONCAT(addons.name SEPARATOR ', ') 
+                 FROM addons 
+                 WHERE JSON_CONTAINS(bookings.addons, JSON_QUOTE(CAST(addons.id AS CHAR(10))))) as addon_names
+            FROM bookings
+            JOIN rooms ON bookings.room_id = rooms.id
+            JOIN users ON bookings.user_id = users.id
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }}
 ?>
