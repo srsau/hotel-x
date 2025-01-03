@@ -30,7 +30,7 @@ class PdfController
             echo 'Booking not found or you do not have permission to access this booking';
             return;
         }
-        
+
         $pdf = new \FPDF();
         $pdf->AddPage();
 
@@ -46,23 +46,35 @@ class PdfController
         $pdf->Cell(0, 10, 'Booking Receipt', 0, 1, 'C');
         $pdf->Ln(10);
 
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(50, 10, 'Field', 1);
+        $pdf->Cell(0, 10, 'Details', 1);
+        $pdf->Ln();
+
         $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(50, 10, 'Booking ID:', 0, 0);
-        $pdf->Cell(0, 10, $booking['id'], 0, 1);
-        $pdf->Cell(50, 10, 'User:', 0, 0);
-        $pdf->Cell(0, 10, htmlspecialchars($_SESSION['user']['name']), 0, 1);
-        $pdf->Cell(50, 10, 'Room:', 0, 0);
-        $pdf->Cell(0, 10, $booking['room_name'], 0, 1);
-        $pdf->Cell(50, 10, 'Check-in Date:', 0, 0);
-        $pdf->Cell(0, 10, $booking['check_in_date'], 0, 1);
-        $pdf->Cell(50, 10, 'Check-out Date:', 0, 0);
-        $pdf->Cell(0, 10, $booking['check_out_date'], 0, 1);
-        $pdf->Cell(50, 10, 'Addons:', 0, 0);
-        $pdf->Cell(0, 10, $booking['addon_names'], 0, 1);
-        $pdf->Cell(50, 10, 'Total Price:', 0, 0);
-        $pdf->Cell(0, 10, '$' . $booking['total_price'], 0, 1);
-        $pdf->Cell(50, 10, 'Status:', 0, 0);
-        $pdf->Cell(0, 10, $booking['status'], 0, 1);
+        $pdf->Cell(50, 10, 'Booking ID:', 1);
+        $pdf->Cell(0, 10, $booking['id'], 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'User:', 1);
+        $pdf->Cell(0, 10, htmlspecialchars($_SESSION['user']['name']), 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'Room:', 1);
+        $pdf->Cell(0, 10, $booking['room_name'], 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'Check-in Date:', 1);
+        $pdf->Cell(0, 10, $booking['check_in_date'], 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'Check-out Date:', 1);
+        $pdf->Cell(0, 10, $booking['check_out_date'], 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'Addons:', 1);
+        $pdf->Cell(0, 10, $booking['addon_names'], 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'Total Price:', 1);
+        $pdf->Cell(0, 10, '$' . $booking['total_price'], 1);
+        $pdf->Ln();
+        $pdf->Cell(50, 10, 'Status:', 1);
+        $pdf->Cell(0, 10, $booking['status'], 1);
         $pdf->Ln(20);
 
         $pdf->SetFont('Arial', 'I', 10);
