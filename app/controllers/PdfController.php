@@ -2,11 +2,17 @@
 
 namespace App\Controllers;
 
+use app\middleware\AuthMiddleware;
 use app\models\Booking;
 require_once __DIR__ . '/../fpdf/fpdf.php';
 
 class PdfController
 {
+    public function __construct()
+    {
+        AuthMiddleware::handle();
+    }
+
     public function generateReceipt()
     {
         if (!isset($_GET['booking_id'])) {
@@ -21,10 +27,10 @@ class PdfController
 
         if (!$booking) {
             http_response_code(404);
-            echo 'Booking not found';
+            echo 'Booking not found or you do not have permission to access this booking';
             return;
         }
-
+        
         $pdf = new \FPDF();
         $pdf->AddPage();
 
