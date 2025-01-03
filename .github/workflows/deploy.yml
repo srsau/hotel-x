@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "Deleting old files from the VM..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} \
-            "rm -rf /var/www/html/*"
+            "sudo rm -rf /var/www/html/*"
       - name: Set up environment variables
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
