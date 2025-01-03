@@ -25,7 +25,7 @@ CREATE TABLE rooms (
     capacity INT NOT NULL,
     floor INT NOT NULL,
     popular TINYINT(1) DEFAULT 0,
-    available_rooms INT NOT NULL DEFAULT 0,  -- New column
+    available_rooms INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -45,22 +45,21 @@ CREATE TABLE bookings (
     room_id INT NOT NULL,
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
-    addons JSON DEFAULT '[]',  -- Default to an empty array
+    addons JSON,  -- Remove default value
     total_price DECIMAL(10, 2) NOT NULL, 
+    status ENUM('valid', 'canceled') DEFAULT 'valid',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE,
     UNIQUE (room_id, check_in_date, check_out_date)
 );
 
--- Tabelul facilități
 DROP TABLE IF EXISTS facilities;
 CREATE TABLE facilities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
--- Relație multe-la-multe între camere și facilități
 DROP TABLE IF EXISTS room_facilities;
 CREATE TABLE room_facilities (
     room_id INT NOT NULL,
@@ -70,15 +69,12 @@ CREATE TABLE room_facilities (
     FOREIGN KEY (facility_id) REFERENCES facilities(id) ON DELETE CASCADE
 );
 
--- Tabel pentru opțiuni suplimentare (add-ons)
 DROP TABLE IF EXISTS addons;
 CREATE TABLE addons (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     price DECIMAL(10, 2) NOT NULL 
 );
-
-ALTER TABLE bookings ADD COLUMN status ENUM('valid', 'canceled') DEFAULT 'valid';
 
 -- Inserări de test pentru camere
 INSERT INTO rooms (name, description, image_url, images, price_per_night, capacity, floor, popular, available_rooms) VALUES
@@ -116,4 +112,3 @@ INSERT INTO addons (name, price) VALUES
 INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, addons, total_price) VALUES
 (1, 1, '2025-01-10', '2025-01-12', '[1, 3]', 270.00),
 (1, 2, '2025-01-15', '2025-01-18', '[2]', 390.00);
-
