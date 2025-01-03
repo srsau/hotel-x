@@ -14,9 +14,7 @@
                         <h5 class="card-title"><?php echo htmlspecialchars($room['name']); ?></h5>
                         <p class="card-text"><?php echo htmlspecialchars($room['description']); ?></p>
                         <p class="card-text"><strong>Capacity:</strong> <?php echo htmlspecialchars($room['capacity']); ?> people</p>
-                        <p class="card-text"><strong>Facilities:</strong> 
-                            <?php echo htmlspecialchars($room['facilities']); ?>
-                        </p>
+                        <p class="my-2"><strong>Facilities:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars($room['facilities']) : 'N/A'; ?></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="card-text m-0"><strong>Price per night:</strong> $<?php echo htmlspecialchars($room['price_per_night'] ?? 'N/A'); ?></p>
                             <div>

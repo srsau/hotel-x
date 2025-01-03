@@ -32,7 +32,8 @@
             <p class="my-2"><strong>Price per night:</strong> $<?php echo htmlspecialchars($room['price_per_night']); ?></p>
             <p class="my-2"><strong>Capacity:</strong> <?php echo htmlspecialchars($room['capacity']); ?> people</p>
             <p class="my-2"><strong>Floor:</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
-            <p class="my-2"><strong>Facilities:</strong> <?php echo htmlspecialchars($room['facilities']); ?></p>
+            <p class="my-2"><strong>Facilities:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars(implode(', ', $room['facilities'])) : 'N/A'; ?></p>
+            <p class="my-2"><strong>Available rooms:</strong> <?php echo htmlspecialchars($room['available_rooms']); ?></p>
             <div class="text-center mt-4">
                 <a href="#" class="btn btn-primary">Book Now</a>
             </div>

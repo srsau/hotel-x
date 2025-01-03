@@ -25,6 +25,10 @@
             <input type="number" class="form-control" id="floor" name="floor" value="<?php echo htmlspecialchars($room['floor'] ?? ''); ?>" required>
         </div>
         <div class="mb-3">
+            <label for="available_rooms" class="form-label">Available Rooms</label>
+            <input type="number" class="form-control" id="available_rooms" name="available_rooms" value="<?php echo htmlspecialchars($room['available_rooms'] ?? ''); ?>" required>
+        </div>
+        <div class="mb-3">
             <label for="popular" class="form-label">Popular</label>
             <input type="checkbox" id="popular" name="popular" <?php echo isset($room['popular']) && $room['popular'] ? 'checked' : ''; ?>>
         </div>

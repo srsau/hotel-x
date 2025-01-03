@@ -2,36 +2,38 @@
 
 namespace App\Controllers;
 
-use app\Database;
-use PDO;
+use app\models\Room;
+use app\models\Facility;
 use Exception;
 
 class RoomController
 {
     public function details()
     {
-        if (!isset($_GET['id'])) {
-            header('Location: /404');
-            exit();
+        try {
+            if (!isset($_GET['id'])) {
+                throw new Exception("Room ID is required.");
+            }
+
+            $roomId = $_GET['id'];
+            $room = Room::getRoomById($roomId);
+
+            if (!$room) {
+                throw new Exception("Room not found.");
+            }
+
+            $room['images'] = json_decode($room['images'], true);
+            $room['facilities'] = Room::getRoomFacilities($roomId);
+
+            $title = 'Room Details - ' . htmlspecialchars($room['name']);
+            $view = __DIR__ . '/../views/room_details.php';
+            require __DIR__ . '/../views/layout.php';
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            $title = 'Error';
+            $view = __DIR__ . '/../views/error.php';
+            require __DIR__ . '/../views/layout.php';
         }
-
-        $roomId = $_GET['id'];
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT rooms.*, GROUP_CONCAT(facilities.name SEPARATOR ', ') as facilities FROM rooms LEFT JOIN room_facilities ON rooms.id = room_facilities.room_id LEFT JOIN facilities ON room_facilities.facility_id = facilities.id WHERE rooms.id = :id GROUP BY rooms.id");
-        $stmt->bindParam(':id', $roomId);
-        $stmt->execute();
-        $room = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$room) {
-            header('Location: /404');
-            exit();
-        }
-
-        $room['images'] = json_decode($room['images'], true);
-
-        $title = 'Room Details - ' . htmlspecialchars($room['name']);
-        $view = __DIR__ . '/../views/room_details.php';
-        require __DIR__ . '/../views/layout.php';
     }
 
     public function create()
@@ -47,6 +49,7 @@ class RoomController
                 $floor = $_POST['floor'];
                 $popular = isset($_POST['popular']) ? 1 : 0;
                 $facilities = $_POST['facilities'] ?? [];
+                $available_rooms = $_POST['available_rooms'];
 
                 $image_url = $this->uploadImage($_FILES['image_url']);
                 $images = $this->uploadImages($_FILES['images']);
@@ -55,20 +58,8 @@ class RoomController
                     throw new Exception("Main image is required.");
                 }
 
-                $db = Database::getInstance()->getConnection();
-                $stmt = $db->prepare("INSERT INTO rooms (name, description, image_url, images, price_per_night, capacity, floor, popular) VALUES (:name, :description, :image_url, :images, :price_per_night, :capacity, :floor, :popular)");
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':image_url', $image_url);
-                $stmt->bindParam(':images', $images);
-                $stmt->bindParam(':price_per_night', $price_per_night);
-                $stmt->bindParam(':capacity', $capacity);
-                $stmt->bindParam(':floor', $floor);
-                $stmt->bindParam(':popular', $popular);
-                $stmt->execute();
-
-                $roomId = $db->lastInsertId();
-                $this->updateFacilities($roomId, $facilities);
+                $roomId = Room::createRoom($name, $description, $image_url, $images, $price_per_night, $capacity, $floor, $popular, $available_rooms);
+                Facility::updateFacilities($roomId, $facilities);
 
                 header('Location: /');
                 exit();
@@ -77,9 +68,7 @@ class RoomController
             }
         }
 
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT * FROM facilities");
-        $facilities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $facilities = Facility::getAllFacilities();
 
         $title = 'Create Room';
         $view = __DIR__ . '/../views/room_form.php';
@@ -90,25 +79,19 @@ class RoomController
     {
         $error = null;
 
-        if (!isset($_GET['id'])) {
-            header('Location: /404');
-            exit();
-        }
+        try {
+            if (!isset($_GET['id'])) {
+                throw new Exception("Room ID is required.");
+            }
 
-        $roomId = $_GET['id'];
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT * FROM rooms WHERE id = :id");
-        $stmt->bindParam(':id', $roomId);
-        $stmt->execute();
-        $room = $stmt->fetch(PDO::FETCH_ASSOC);
+            $roomId = $_GET['id'];
+            $room = Room::getRoomById($roomId);
 
-        if (!$room) {
-            header('Location: /404');
-            exit();
-        }
+            if (!$room) {
+                throw new Exception("Room not found.");
+            }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name = $_POST['name'];
                 $description = $_POST['description'];
                 $price_per_night = $_POST['price_per_night'];
@@ -116,6 +99,7 @@ class RoomController
                 $floor = $_POST['floor'];
                 $popular = isset($_POST['popular']) ? 1 : 0;
                 $facilities = $_POST['facilities'] ?? [];
+                $available_rooms = $_POST['available_rooms'];
 
                 $image_url = $this->uploadImage($_FILES['image_url'], $room['image_url']);
                 $images = $this->uploadImages($_FILES['images'], $room['images']);
@@ -124,40 +108,27 @@ class RoomController
                     throw new Exception("Main image is required.");
                 }
 
-                $stmt = $db->prepare("UPDATE rooms SET name = :name, description = :description, image_url = :image_url, images = :images, price_per_night = :price_per_night, capacity = :capacity, floor = :floor, popular = :popular WHERE id = :id");
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':image_url', $image_url);
-                $stmt->bindParam(':images', $images);
-                $stmt->bindParam(':price_per_night', $price_per_night);
-                $stmt->bindParam(':capacity', $capacity);
-                $stmt->bindParam(':floor', $floor);
-                $stmt->bindParam(':popular', $popular);
-                $stmt->bindParam(':id', $roomId);
-                $stmt->execute();
-
-                $this->updateFacilities($roomId, $facilities);
+                Room::updateRoom($roomId, $name, $description, $image_url, $images, $price_per_night, $capacity, $floor, $popular, $available_rooms);
+                Facility::updateFacilities($roomId, $facilities);
 
                 header('Location: /');
                 exit();
-            } catch (Exception $e) {
-                $error = $e->getMessage();
             }
+
+            $facilities = Facility::getAllFacilities();
+            $roomFacilities = Facility::getFacilitiesByRoomId($roomId);
+
+            $room['images'] = json_decode($room['images'], true);
+
+            $title = 'Edit Room - ' . htmlspecialchars($room['name']);
+            $view = __DIR__ . '/../views/room_form.php';
+            require __DIR__ . '/../views/layout.php';
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            $title = 'Error';
+            $view = __DIR__ . '/../views/error.php';
+            require __DIR__ . '/../views/layout.php';
         }
-
-        $stmt = $db->query("SELECT * FROM facilities");
-        $facilities = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $stmt = $db->prepare("SELECT facility_id FROM room_facilities WHERE room_id = :room_id");
-        $stmt->bindParam(':room_id', $roomId);
-        $stmt->execute();
-        $roomFacilities = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        $room['images'] = json_decode($room['images'], true);
-
-        $title = 'Edit Room - ' . htmlspecialchars($room['name']);
-        $view = __DIR__ . '/../views/room_form.php';
-        require __DIR__ . '/../views/layout.php';
     }
 
     private function uploadImage($file, $existingImage = null)
@@ -184,19 +155,5 @@ class RoomController
         }
         return json_encode(array_merge(json_decode($existingImages, true) ?? [], $uploadedImages));
     }
-
-    private function updateFacilities($roomId, $facilities)
-    {
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("DELETE FROM room_facilities WHERE room_id = :room_id");
-        $stmt->bindParam(':room_id', $roomId);
-        $stmt->execute();
-
-        foreach ($facilities as $facilityId) {
-            $stmt = $db->prepare("INSERT INTO room_facilities (room_id, facility_id) VALUES (:room_id, :facility_id)");
-            $stmt->bindParam(':room_id', $roomId);
-            $stmt->bindParam(':facility_id', $facilityId);
-            $stmt->execute();
-        }
-    }
 }
+?>

@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use app\Database;
-use PDO;
+use app\models\User;
+use app\models\Verification;
 use app\middleware\AuthMiddleware;
 
 require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
@@ -31,19 +31,9 @@ class UserController
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $verification_code = bin2hex(random_bytes(16));
 
-            $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("INSERT INTO users (email, name, username, password) VALUES (:email, :name, :username, :password)");
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':password', $password);
-            $stmt->execute();
+            $user_id = User::create($email, $name, $username, $password);
 
-            $user_id = $db->lastInsertId();
-            $stmt = $db->prepare("INSERT INTO email_verifications (user_id, verification_code) VALUES (:user_id, :verification_code)");
-            $stmt->bindParam(':user_id', $user_id);
-            $stmt->bindParam(':verification_code', $verification_code);
-            $stmt->execute();
+            Verification::create($user_id, $verification_code);
 
             $this->sendVerificationEmail($email, $verification_code);
 
@@ -100,20 +90,11 @@ class UserController
         if (isset($_GET['code'])) {
             $verification_code = $_GET['code'];
 
-            $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("SELECT user_id FROM email_verifications WHERE verification_code = :verification_code");
-            $stmt->bindParam(':verification_code', $verification_code);
-            $stmt->execute();
-            $verification = $stmt->fetch(PDO::FETCH_ASSOC);
+            $verification = Verification::findByCode($verification_code);
 
             if ($verification) {
-                $stmt = $db->prepare("UPDATE users SET verified = 1 WHERE id = :user_id");
-                $stmt->bindParam(':user_id', $verification['user_id']);
-                $stmt->execute();
-
-                $stmt = $db->prepare("DELETE FROM email_verifications WHERE verification_code = :verification_code");
-                $stmt->bindParam(':verification_code', $verification_code);
-                $stmt->execute();
+                User::verify($verification['user_id']);
+                Verification::deleteByCode($verification_code);
 
                 $message = "Email verified successfully! You can now log in.";
             }
@@ -130,15 +111,8 @@ class UserController
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $db = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            echo '<pre>';
-            var_dump($user);
-            echo '</pre>';
-            
+            $user = User::findByEmail($email);
+
             if ($user && password_verify($password, $user['password'])) {
                 if ($user['verified'] == 1) {
                     $_SESSION['user'] = [
@@ -146,7 +120,7 @@ class UserController
                         'email' => $user['email'],
                         'name' => $user['name'],
                         'username' => $user['username'],
-                        'role' => $user['role'] 
+                        'role' => $user['role']
                     ];
                     header('Location: /');
                 } else {
