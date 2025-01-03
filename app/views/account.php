@@ -29,6 +29,7 @@
                         <?php if ($booking['status'] === 'valid'): ?>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal" data-booking-id="<?= $booking['id'] ?>">Cancel</button>
                         <?php endif; ?>
+                        <a href="/account/pdf?booking_id=<?= $booking['id'] ?>" class="btn btn-primary btn-sm">Download PDF</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

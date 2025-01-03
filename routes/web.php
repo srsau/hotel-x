@@ -6,6 +6,7 @@ $routes = [
     '/contact' => 'ContactController@contact',
     '/account' => 'AccountController@index',
     '/account/cancel' => 'AccountController@cancelBooking',
+    '/account/pdf' => 'PdfController@generateReceipt',
     '/404' => 'ErrorController@notFound',
     '/register' => 'UserController@register',
     '/login' => 'UserController@login',
