@@ -15,6 +15,7 @@ $routes = [
     '/verify' => 'UserController@verify',
     '/admin' => 'AdminController@index',
     '/admin/bookings' => 'AdminController@bookings',
+    '/admin/analytics' => 'AdminController@analytics',
     '/admin/cancel' => 'AdminController@cancelBooking',
     '/room' => 'RoomController@details',
     '/room/create' => 'RoomController@create',

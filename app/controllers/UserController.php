@@ -115,7 +115,7 @@ class UserController
 
             if ($user && password_verify($password, $user['password'])) {
                 if ($user['verified'] == 1) {
-                    session_regenerate_id(true);
+                    // session_regenerate_id(true);
                     $_SESSION['user'] = [
                         'id' => $user['id'],
                         'email' => $user['email'],

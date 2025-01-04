@@ -76,6 +76,19 @@ CREATE TABLE addons (
     price DECIMAL(10, 2) NOT NULL 
 );
 
+DROP TABLE IF EXISTS analytics;
+CREATE TABLE analytics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL,
+    page VARCHAR(255) NOT NULL,
+    session_id VARCHAR(255) NOT NULL,
+    load_count INT NOT NULL DEFAULT 1,
+    user_agent VARCHAR(255) NOT NULL,
+    device_type ENUM('pc', 'mobile', 'tablet', 'unknown') NOT NULL DEFAULT 'unknown',
+    browser_name VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Inserări de test pentru camere
 INSERT INTO rooms (name, description, image_url, images, price_per_night, capacity, floor, popular, available_rooms) VALUES
 ('Room-1', 'Modern room with mountain view.', '/images/solo-room-1.jpg', '["/images/solo-room-1.jpg"]', 120.00, 2, 1, 1, 1),
