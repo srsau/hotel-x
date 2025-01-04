@@ -2,12 +2,12 @@
 
 $routes = [
     '/' => 'HomeController@index',
-    '/about' => 'AboutController@about',
     '/contact' => 'ContactController@contact',
     '/contact/submit' => 'ContactController@submit',
     '/account' => 'AccountController@index',
     '/account/cancel' => 'AccountController@cancelBooking',
     '/account/pdf' => 'PdfController@generateReceipt',
+    '/account/change_currency' => 'UserController@changeCurrency',
     '/404' => 'ErrorController@notFound',
     '/register' => 'UserController@register',
     '/login' => 'UserController@login',
@@ -21,14 +21,12 @@ $routes = [
     '/room/create' => 'RoomController@create',
     '/room/edit' => 'RoomController@edit',
     '/rooms/available' => 'RoomController@getAvailableRooms',
-    '/booking/steps' => 'BookingController@steps',
     '/book' => 'BookingController@book',
     '/api/rooms/available' => 'ApiController@getAvailableRooms',
     '/api/addons' => 'ApiController@getAddons',
     '/api/room' => 'ApiController@getRoomById',
     '/api/book' => 'BookingController@finalizeBooking',
     '/api/convertAmount' => 'ApiController@convertAmount',
-    '/account/change_currency' => 'UserController@changeCurrency',
 ];
 
 return $routes;
