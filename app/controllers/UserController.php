@@ -57,23 +57,24 @@ class UserController
             $mail->SMTPDebug  = 0;
             $mail->SMTPAuth   = true;
 
-            $to = 'ctinsergiu@gmail.com';
-            $nume = 'Daw Project';
+            $nume = 'Hotel X';
 
             $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
             $verification_link = $base_url . "/verify?code=$verification_code";
-            $message = "Please click the link to verify your email: <a href='$verification_link'>Verify Email</a>";
-
+            $message = "Welcome to Hotel X! To get started, please confirm your email address by clicking the link below:<br><br> 
+            <a href='$verification_link'>Verify My Email</a><br><br> 
+            If you didn’t sign up for Hotel X, you can safely ignore this email.";
+            
             $mail->SMTPSecure = "ssl";
             $mail->Host       = "smtp.gmail.com";
             $mail->Port       = 465;
             $mail->Username   = getenv('EMAIL_USERNAME');              // GMAIL username
             $mail->Password   = getenv('EMAIL_PASSWORD');            // GMAIL password
-            $mail->AddReplyTo('escdev7@gmail.com', 'Daw Project');
-            $mail->AddAddress($to, $nume);
+            $mail->AddReplyTo('escdev7@gmail.com', 'Hotel X');
+            $mail->AddAddress($email, $nume);
 
-            $mail->SetFrom('escdev7@gmail.com', 'Daw Project');
-            $mail->Subject = 'Test';
+            $mail->SetFrom('escdev7@gmail.com', 'Hotel X');
+            $mail->Subject = 'Hotel X - Verification Code';
             $mail->AltBody = 'To view this post you need a compatible HTML viewer!';
             $mail->MsgHTML($message);
             $mail->Send();
