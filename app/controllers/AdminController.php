@@ -44,16 +44,16 @@ class AdminController
             $bookingId = $_POST['booking_id'];
             $reason = $_POST['reason'];
 
-            $userEmail = Booking::cancelBookingByAdmin($bookingId, $reason);
+            $bookingDetails = Booking::cancelBookingByAdmin($bookingId, $reason);
 
-            $this->sendCancellationEmail($userEmail, $reason);
+            $this->sendCancellationEmail($bookingDetails, $reason);
 
             header('Location: /admin/bookings');
             exit();
         }
     }
 
-    private function sendCancellationEmail($email, $reason)
+    private function sendCancellationEmail($bookingDetails, $reason)
     {
         $mail = new PHPMailer(true);
 
@@ -67,11 +67,20 @@ class AdminController
             $mail->Username   = getenv('EMAIL_USERNAME');
             $mail->Password   = getenv('EMAIL_PASSWORD');
             $mail->AddReplyTo('no-reply@hotelx.com', 'Hotel X');
-            $mail->AddAddress($email);
+            $mail->AddAddress($bookingDetails['user_email']);
             $mail->SetFrom('no-reply@hotelx.com', 'Hotel X');
             $mail->Subject = 'Booking Cancellation';
             $mail->AltBody = 'To view this email, please use an HTML compatible email viewer!';
-            $mail->MsgHTML("Your booking has been canceled for the following reason: $reason");
+            $mail->MsgHTML("
+                Dear {$bookingDetails['user_name']},<br><br>
+                Your booking has been canceled for the following reason: $reason<br><br>
+                Booking Details:<br>
+                Room: {$bookingDetails['room_name']}<br>
+                Check-in Date: {$bookingDetails['check_in_date']}<br><br>
+                We apologize for any inconvenience caused.<br><br>
+                Regards,<br>
+                Hotel X
+            ");
             $mail->Send();
         } catch (Exception $e) {
             echo $e->getMessage();

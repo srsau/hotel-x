@@ -95,13 +95,24 @@ class Booking
         $stmt->bindParam(':booking_id', $bookingId, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Fetch user email
-        $stmt = $db->prepare("SELECT users.email FROM bookings JOIN users ON bookings.user_id = users.id WHERE bookings.id = :booking_id");
+        // Fetch booking details
+        $stmt = $db->prepare("
+            SELECT 
+                rooms.name as room_name, 
+                bookings.check_in_date, 
+                bookings.check_out_date, 
+                users.email as user_email, 
+                users.name as user_name
+            FROM bookings
+            JOIN rooms ON bookings.room_id = rooms.id
+            JOIN users ON bookings.user_id = users.id
+            WHERE bookings.id = :booking_id
+        ");
         $stmt->bindParam(':booking_id', $bookingId, PDO::PARAM_INT);
         $stmt->execute();
-        $userEmail = $stmt->fetchColumn();
+        $bookingDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $userEmail;
+        return $bookingDetails;
     }
 }
 ?>
