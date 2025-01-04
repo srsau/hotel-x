@@ -7,13 +7,12 @@ use PDO;
 
 class User
 {
-    public static function create($email, $name, $username, $password)
+    public static function create($email, $name,  $password)
     {
         $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("INSERT INTO users (email, name, username, password) VALUES (:email, :name, :username, :password)");
+        $stmt = $db->prepare("INSERT INTO users (email, name, password) VALUES (:email, :name, :password)");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
         return $db->lastInsertId();

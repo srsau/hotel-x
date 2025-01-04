@@ -26,11 +26,10 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $name = $_POST['name'];
-            $username = $_POST['username'];
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $verification_code = bin2hex(random_bytes(16));
 
-            $user_id = User::create($email, $name, $username, $password);
+            $user_id = User::create($email, $name, $password);
 
             Verification::create($user_id, $verification_code);
 
@@ -118,7 +117,6 @@ class UserController
                         'id' => $user['id'],
                         'email' => $user['email'],
                         'name' => $user['name'],
-                        'username' => $user['username'],
                         'role' => $user['role']
                     ];
                     echo '<script>

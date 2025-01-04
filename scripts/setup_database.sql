@@ -7,7 +7,6 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     verified TINYINT(1) DEFAULT 0,
     role ENUM('customer', 'admin') NOT NULL DEFAULT 'customer',
@@ -83,9 +82,9 @@ INSERT INTO rooms (name, description, image_url, images, price_per_night, capaci
 ('Room-3', 'Spacious suite with king-size bed.', '/images/ap-1.jpg', '["/images/ap-1.1.jpg", "/images/ap-1.2.jpg", "/images/ap-1.3.jpg"]', 200.00, 4, 3, 1, 3);
 
 -- Inserări de test pentru utilizatori
-INSERT INTO users (email, name, username, password, verified, role) VALUES 
-('customer@example.com', 'Customer', 'customer', 'customer', 1, 'customer'), 
-('admin@example.com', 'Admin', 'admin', 'admin', 1, 'admin');
+INSERT INTO users (email, name, password, verified, role) VALUES 
+('customer@example.com', 'Customer', 'customer', 1, 'customer'), 
+('admin@example.com', 'Admin', 'admin', 1, 'admin');
 
 -- Inserări de test pentru facilități
 INSERT INTO facilities (name) VALUES 
