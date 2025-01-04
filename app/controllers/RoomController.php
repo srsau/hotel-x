@@ -25,6 +25,10 @@ class RoomController
             $room['images'] = json_decode($room['images'], true);
             $room['facilities'] = Room::getRoomFacilities($roomId);
 
+            if (isset($_SESSION['user']['id'])) {
+                $room['available_rooms'] = Room::getCurrentAvailableRoomsCount($roomId);
+            }
+
             $title = 'Room Details - ' . htmlspecialchars($room['name']);
             $view = __DIR__ . '/../views/room_details.php';
             $keywords = ['vacanta', 'hotel', 'camera', htmlspecialchars($room['name'])];

@@ -101,7 +101,6 @@ class Room
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-
     public static function getAvailableRooms($startDate, $endDate, $guests)
     {
         $db = Database::getInstance()->getConnection();
@@ -139,6 +138,29 @@ class Room
         $stmt->bindParam(':guests', $guests, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getCurrentAvailableRoomsCount($roomId)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            SELECT 
+                r.available_rooms - IFNULL((
+                    SELECT COUNT(*)
+                    FROM bookings b
+                    WHERE b.room_id = r.id
+                    AND b.check_in_date <= CURDATE()
+                    AND b.check_out_date >= CURDATE()
+                    AND b.status = 'valid'
+                ), 0) AS available
+            FROM 
+                rooms r
+            WHERE 
+                r.id = :room_id
+        ");
+        $stmt->bindParam(':room_id', $roomId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 }
 ?>

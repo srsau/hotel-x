@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../helpers/convertPrice.php';
     $preferred_currency = $_SESSION['preferred_currency'];
+    $is_authenticated = isset($_SESSION['user']['id']);
     ?>
 <div class="container mt-4">
     <div class="card">
@@ -37,7 +38,9 @@
             <p class="my-2"><strong>Capacitate:</strong> <?php echo htmlspecialchars($room['capacity']); ?> persoane</p>
             <p class="my-2"><strong>Etaj:</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
             <p class="my-2"><strong>Facilități:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars(implode(', ', $room['facilities'])) : 'N/A'; ?></p>
-            <p class="my-2"><strong>Camere disponibile:</strong> <?php echo htmlspecialchars($room['available_rooms']); ?></p>
+            <?php if ($is_authenticated): ?>
+                <p class="my-2"><strong>Camere disponibile in prezent:</strong> <?php echo htmlspecialchars($room['available_rooms']); ?></p>
+            <?php endif; ?>
             <div class="text-center mt-4">
                 <a href="#" class="btn btn-primary">Rezervă acum</a>
             </div>
