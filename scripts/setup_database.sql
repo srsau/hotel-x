@@ -89,39 +89,36 @@ CREATE TABLE analytics (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Inserări de test pentru camere
+DELETE FROM rooms;
 INSERT INTO rooms (name, description, image_url, images, price_per_night, capacity, floor, popular, available_rooms) VALUES
-('Room-1', 'Modern room with mountain view.', '/images/solo-room-1.jpg', '["/images/solo-room-1.jpg"]', 120.00, 2, 1, 1, 1),
-('Room-2', 'Cozy room near the pool.', '/images/big-room-1.jpg', '["/images/big-room-1.jpg"]', 90.00, 2, 2, 0, 10),
-('Room-3', 'Spacious suite with king-size bed.', '/images/ap-1.jpg', '["/images/ap-1.1.jpg", "/images/ap-1.2.jpg", "/images/ap-1.3.jpg"]', 200.00, 4, 3, 1, 3);
+('Camera-1', 'Cameră modernă cu vedere la munte.', '/images/solo-room-1.jpg', '["/images/solo-room-1.jpg"]', 120.00, 2, 1, 1, 1),
+('Camera-2', 'Cameră confortabilă lângă piscină.', '/images/big-room-1.jpg', '["/images/big-room-1.jpg"]', 90.00, 2, 2, 0, 10),
+('Camera-3', 'Suită spațioasă cu pat king-size.', '/images/ap-1.jpg', '["/images/ap-1.1.jpg", "/images/ap-1.2.jpg", "/images/ap-1.3.jpg"]', 200.00, 4, 3, 1, 3),
+('Camera-4', 'Cameră confortabilă cu vedere la grădină.', '/images/solo-room-1.jpg', '["/images/solo-room-1.jpg"]', 110.00, 2, 1, 0, 5),
+('Camera-5', 'Cameră spațioasă cu balcon.', '/images/big-room-1.jpg', '["/images/big-room-1.jpg"]', 130.00, 3, 2, 1, 4),
+('Camera-6', 'Suită de lux cu vedere la mare.', '/images/ap-1.jpg', '["/images/ap-1.1.jpg", "/images/ap-1.2.jpg"]', 250.00, 4, 3, 1, 2),
+('Camera-7', 'Cameră dublă cu acces la piscină.', '/images/big-room-1.jpg', '["/images/big-room-1.jpg"]', 95.00, 2, 1, 0, 8),
+('Camera-8', 'Cameră single modernă.', '/images/solo-room-1.jpg', '["/images/solo-room-1.jpg"]', 85.00, 1, 1, 0, 6);
 
--- Inserări de test pentru utilizatori
-INSERT INTO users (email, name, password, verified, role) VALUES 
-('customer@example.com', 'Customer', 'customer', 1, 'customer'), 
-('admin@example.com', 'Admin', 'admin', 1, 'admin');
-
--- Inserări de test pentru facilități
 INSERT INTO facilities (name) VALUES 
 ('WiFi'), 
-('Air Conditioning'), 
+('Aer Condiționat'), 
 ('TV'), 
 ('Mini Bar'), 
-('Balcony'), 
-('Pool Access');
+('Balcon'), 
+('Acces la Piscină');
 
--- Asociere camere-facilități
 INSERT INTO room_facilities (room_id, facility_id) VALUES 
 (1, 1), (1, 2), (1, 3), 
 (2, 1), (2, 3), (2, 6),
-(3, 1), (3, 2), (3, 4), (3, 5);
+(3, 1), (3, 2), (3, 4), (3, 5),
+(4, 1), (4, 2), (4, 3),
+(5, 1), (5, 4), (5, 5),
+(6, 1), (6, 2), (6, 6),
+(7, 1), (7, 3), (7, 6),
+(8, 1), (8, 2), (8, 3);
 
--- Inserări de test pentru opțiuni suplimentare (add-ons)
 INSERT INTO addons (name, price) VALUES
 ('Mic-dejun', 50.00),
 ('Prânz', 100.00),
 ('Late checkout', 150.00);
-
--- Inserări de test pentru rezervări
-INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, addons, total_price) VALUES
-(1, 1, '2025-01-10', '2025-01-12', '[1, 3]', 270.00),
-(1, 2, '2025-01-15', '2025-01-18', '[2]', 390.00);
