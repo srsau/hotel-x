@@ -33,6 +33,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
           echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> /var/www/html/.env
           echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> /var/www/html/.env
+          echo "RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}" >> /var/www/html/.env
           EOF
 
       # Step 4: Deploy new files to VM
