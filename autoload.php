@@ -29,6 +29,15 @@ loadEnv(__DIR__ . '/.env');
 
 // Your existing autoloader code
 spl_autoload_register(function ($class) {
+    $builtInClasses = [
+        'DOMDocument',
+        'DOMXPath',
+    ];
+
+    if (in_array($class, $builtInClasses)) {
+        return;
+    }
+
     $class = str_replace('app\\', '', $class);
     $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
     $file = __DIR__ . '/app/' . $class . '.php';
