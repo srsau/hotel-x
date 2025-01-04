@@ -1,13 +1,31 @@
 <?php
     require_once __DIR__ . '/../helpers/convertPrice.php';
+    require_once __DIR__ . '/../helpers/getCurrencies.php';
     $preferred_currency = $_SESSION['preferred_currency'];
-    ?>
+    $currencies = getCurrencies();
+?>
 <div class="container mt-4">
     <h2>My Account</h2>
     <p>Welcome to your account page, <?php echo htmlspecialchars($_SESSION['user']['name']); ?>!</p>
     <p>Email: <?php echo htmlspecialchars($_SESSION['user']['email']); ?></p>
 
-    <h3>Your Bookings</h3>
+    <h4>Account Settings</h4>
+
+    <div class="mb-3">
+        <label for="preferred_currency" class="form-label">Preferred Currency</label>
+        <select class="form-control" id="preferred_currency" name="preferred_currency" onchange="changeCurrency(this.value)">
+            <?php foreach ($currencies as $currency): ?>
+                <option value="<?php echo htmlspecialchars($currency); ?>" <?php echo $currency === $preferred_currency ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($currency); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+
+    <h4>Your Bookings</h4>
+   
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -41,36 +59,18 @@
     </table>
 </div>
 
-<!-- Cancel Booking Modal -->
-<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelModalLabel">Cancel Booking</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to cancel this booking?
-            </div>
-            <div class="modal-footer">
-                <form id="cancelBookingForm" method="post" action="/account/cancel">
-                    <input type="hidden" name="booking_id" id="bookingIdInput">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="submit" class="btn btn-danger">Yes, Cancel</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var cancelModal = document.getElementById('cancelModal');
-    cancelModal.addEventListener('show.bs.modal', function(event) {
-        var button = event.relatedTarget;
-        var bookingId = button.getAttribute('data-booking-id');
-        var bookingIdInput = document.getElementById('bookingIdInput');
-        bookingIdInput.value = bookingId;
+function changeCurrency(currency) {
+    fetch('/account/change_currency', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ currency: currency, user_id: <?php echo $_SESSION['user']['id']; ?> })
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        }
     });
-});
+}
 </script>

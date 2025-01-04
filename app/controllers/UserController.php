@@ -7,13 +7,11 @@ use app\models\Verification;
 use app\middleware\AuthMiddleware;
 
 require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
+require_once __DIR__ . '/../helpers/getCurrencies.php';
 
 use PHPMailer;
 use Exception;
 use phpmailerException;
-use DOMDocument;
-use DOMXPath;
-use DateTime;
 
 class UserController
 {
@@ -32,19 +30,19 @@ class UserController
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $preferred_currency = $_POST['preferred_currency'];
             $verification_code = bin2hex(random_bytes(16));
-    
+
             $user_id = User::create($email, $name, $password, $preferred_currency);
-    
+
             Verification::create($user_id, $verification_code);
-    
+
             $this->sendVerificationEmail($email, $verification_code);
-    
+
             $message = "Registration successful! Please check your email to verify your account.";
             $title = 'Registration Successful';
             $view = __DIR__ . '/../views/message.php';
             require __DIR__ . '/../views/layout.php';
         } else {
-            $currencies = $this->getCurrencies();
+            $currencies = getCurrencies();
             $view = __DIR__ . '/../views/register.php';
             require __DIR__ . '/../views/layout.php';
         }
@@ -84,7 +82,6 @@ class UserController
         } catch (Exception $e) {
             echo $e->getMessage(); //error from anything else!
         }
-
     }
 
     public function verify()
@@ -135,8 +132,8 @@ class UserController
                         window.location.href = "/book";
                     }
                 </script>';
-                exit();
-            } else {
+                    exit();
+                } else {
                     $error = "Please verify your email before logging in.";
                 }
             } else {
@@ -155,29 +152,15 @@ class UserController
         exit();
     }
 
-    private function getCurrencies()
+    public function changeCurrency()
     {
-        $yesterday = (new DateTime('yesterday'))->format('Y-m-d');
-    
-        $url = "https://www.xe.com/currencytables/?from=USD&date=$yesterday";
-
-        $html = file_get_contents($url);
-        
-        $dom = new DOMDocument();
-        @$dom->loadHTML($html); 
-        
-        $xpath = new DOMXPath($dom);
-        $currencyNodes = $xpath->query('//table[contains(.,"Currency")]/tbody/tr/th');
-        
-        $currencies = ['USD'];
-        foreach ($currencyNodes as $node) {
-            $currencyCode = $node->nodeValue;
-            // $currencies[] = $currencyCode;
-            if ($currencyCode !== 'USD') { 
-                $currencies[] = $currencyCode;
-            }
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (isset($data['currency']) && isset($data['user_id'])) {
+            User::updatePreferredCurrency($data['user_id'], $data['currency']);
+            $_SESSION['preferred_currency'] = $data['currency'];
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
         }
-        
-        return $currencies;
     }
 }

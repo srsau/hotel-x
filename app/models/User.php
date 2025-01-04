@@ -35,4 +35,13 @@ class User
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
     }
+
+    public static function updatePreferredCurrency($user_id, $currency)
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("UPDATE users SET preferred_currency = :currency WHERE id = :user_id");
+        $stmt->bindParam(':currency', $currency);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+    }
 }

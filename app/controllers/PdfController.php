@@ -36,7 +36,9 @@ class PdfController
         $pdf = new \FPDF();
         $pdf->AddPage();
 
-        $pdf->SetFont('Arial', 'B', 16);
+        // Use Arial font with UTF-8 encoding
+        $pdf->SetFont('Arial', '', 16);
+
         $pdf->Cell(0, 10, 'Hotel X', 0, 1, 'C');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, '123 Fake Street, Faketown, FK1 2AB', 0, 1, 'C');
@@ -44,11 +46,11 @@ class PdfController
         $pdf->Cell(0, 10, 'Email: info@hotelx.com', 0, 1, 'C');
         $pdf->Ln(10);
 
-        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->SetFont('Arial', '', 14);
         $pdf->Cell(0, 10, 'Booking Receipt', 0, 1, 'C');
         $pdf->Ln(10);
 
-        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(50, 10, 'Field', 1);
         $pdf->Cell(0, 10, 'Details', 1);
         $pdf->Ln();
@@ -70,10 +72,10 @@ class PdfController
         $pdf->Cell(0, 10, $booking['check_out_date'], 1);
         $pdf->Ln();
         $pdf->Cell(50, 10, 'Addons:', 1);
-        $pdf->Cell(0, 10, $booking['addon_names'], 1);
+        $pdf->Cell(0, 10, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $booking['addon_names']), 1);
         $pdf->Ln();
         $pdf->Cell(50, 10, 'Total Price:', 1);
-        $pdf->Cell(0, 10, convertPrice($booking['total_price'], $preferred_currency), 1);
+        $pdf->Cell(0, 10, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', convertPrice($booking['total_price'], $preferred_currency)), 1);
         $pdf->Ln();
         $pdf->Cell(50, 10, 'Status:', 1);
         $pdf->Cell(0, 10, $booking['status'], 1);
