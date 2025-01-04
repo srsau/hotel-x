@@ -1,16 +1,16 @@
 <div class="container mt-4">
-    <h2>All Bookings</h2>
+    <h2>Toate Rezervările</h2>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>User</th>
-                <th>Room</th>
-                <th>Check-in Date</th>
-                <th>Check-out Date</th>
-                <th>Addons</th>
-                <th>Total Price</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Utilizator</th>
+                <th>Cameră</th>
+                <th>Data Check-in</th>
+                <th>Data Check-out</th>
+                <th>Adăugiri</th>
+                <th>Preț Total</th>
+                <th>Stare</th>
+                <th>Acțiuni</th>
             </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
                     <td><?= htmlspecialchars($booking['status']) ?></td>
                     <td>
                         <?php if ($booking['status'] === 'valid'): ?>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal" data-booking-id="<?= $booking['id'] ?>">Cancel</button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal" data-booking-id="<?= $booking['id'] ?>">Anulează</button>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -34,23 +34,22 @@
     </table>
 </div>
 
-<!-- Cancel Booking Modal -->
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="cancelModalLabel">Cancel Booking</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="cancelModalLabel">Anulare Rezervare</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
             </div>
             <div class="modal-body">
                 <form id="cancelBookingForm" method="post" action="/admin/cancel">
                     <input type="hidden" name="booking_id" id="bookingIdInput">
                     <div class="mb-3">
-                        <label for="reason" class="form-label">Reason for Cancellation</label>
+                        <label for="reason" class="form-label">Motivul Anulării</label>
                         <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
                     </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nu</button>
+                    <button type="submit" class="btn btn-danger">Da, Anulează</button>
                 </form>
             </div>
         </div>

@@ -1,4 +1,4 @@
-    <?php
+<?php
     require_once __DIR__ . '/../helpers/convertPrice.php';
     $preferred_currency = $_SESSION['preferred_currency'];
     ?>
@@ -17,29 +17,29 @@
                 <div class="carousel-inner">
                     <?php foreach ($room['images'] as $index => $image): ?>
                         <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                            <img src="<?php echo htmlspecialchars($image); ?>" class="d-block w-auto" alt="Room Image" style="height: 268px; object-fit: cover;">
+                            <img src="<?php echo htmlspecialchars($image); ?>" class="d-block w-auto" alt="Imagine Cameră" style="height: 268px; object-fit: cover;">
                         </div>
                     <?php endforeach; ?>
                 </div>
                 <?php if (count($room['images']) > 1): ?>
                     <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev" style="height: 268px;">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+                        <span class="visually-hidden">Anterior</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next" style="height: 268px;">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                        <span class="visually-hidden">Următor</span>
                     </button>
                 <?php endif; ?>
             </div>
-            <p class="my-2"><strong>Description:</strong> <?php echo htmlspecialchars($room['description']); ?></p>
-            <p class="my-2"><strong>Price per night:</strong> <?php echo htmlspecialchars(convertPrice($room['price_per_night'], $preferred_currency)); ?></p>
-            <p class="my-2"><strong>Capacity:</strong> <?php echo htmlspecialchars($room['capacity']); ?> people</p>
-            <p class="my-2"><strong>Floor:</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
-            <p class="my-2"><strong>Facilities:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars(implode(', ', $room['facilities'])) : 'N/A'; ?></p>
-            <p class="my-2"><strong>Available rooms:</strong> <?php echo htmlspecialchars($room['available_rooms']); ?></p>
+            <p class="my-2"><strong>Descriere:</strong> <?php echo htmlspecialchars($room['description']); ?></p>
+            <p class="my-2"><strong>Preț pe noapte:</strong> <?php echo htmlspecialchars(convertPrice($room['price_per_night'], $preferred_currency)); ?></p>
+            <p class="my-2"><strong>Capacitate:</strong> <?php echo htmlspecialchars($room['capacity']); ?> persoane</p>
+            <p class="my-2"><strong>Etaj:</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
+            <p class="my-2"><strong>Facilități:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars(implode(', ', $room['facilities'])) : 'N/A'; ?></p>
+            <p class="my-2"><strong>Camere disponibile:</strong> <?php echo htmlspecialchars($room['available_rooms']); ?></p>
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary">Book Now</a>
+                <a href="#" class="btn btn-primary">Rezervă acum</a>
             </div>
         </div>
     </div>

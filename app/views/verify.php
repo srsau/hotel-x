@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    Email Verification
+                    Verificare Email
                 </div>
                 <div class="card-body">
                     <?php if (isset($message)): ?>

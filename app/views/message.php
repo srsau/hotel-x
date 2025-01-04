@@ -6,6 +6,6 @@
         <div class="alert alert-info">
             <?php echo htmlspecialchars($message); ?>
         </div>
-        <p><a href="/" class="btn btn-primary">Go to Home</a></p>
+        <p><a href="/" class="btn btn-primary">Mergi la pagina principală</a></p>
     </div>
 </div>
