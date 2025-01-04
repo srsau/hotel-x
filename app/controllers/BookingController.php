@@ -9,32 +9,6 @@ use Exception;
 
 class BookingController
 {
-    public function step1()
-    {
-        require __DIR__ . '/../views/book.php';
-    }
-
-    public function step2()
-    {
-        require __DIR__ . '/../views/book.php';
-    }
-
-    public function step3()
-    {
-        require __DIR__ . '/../views/book.php';
-    }
-
-    public function step4()
-    {
-        $addons = Addon::getAllAddons();
-        require __DIR__ . '/../views/book.php';
-    }
-
-    public function step5()
-    {
-        require __DIR__ . '/../views/book.php';
-    }
-
     public function finalizeBooking()
     {
         try {
@@ -87,6 +61,8 @@ class BookingController
     ';
     
         $view = __DIR__ . '/../views/book.php';
+        $keywords = ['rezerva', 'camera', 'concediu'];
+        $description = 'Rezerva acum o camera pentru urmatorul tau concediu!';
         require __DIR__ . '/../views/layout.php';
     }
 }

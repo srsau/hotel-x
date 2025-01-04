@@ -27,6 +27,8 @@ class RoomController
 
             $title = 'Room Details - ' . htmlspecialchars($room['name']);
             $view = __DIR__ . '/../views/room_details.php';
+            $keywords = ['vacanta', 'hotel', 'camera', htmlspecialchars($room['name'])];
+            $description = 'Detaliile camerei ' . htmlspecialchars($room['name']) . ' la Hotel X';
             require __DIR__ . '/../views/layout.php';
         } catch (Exception $e) {
             $error = $e->getMessage();

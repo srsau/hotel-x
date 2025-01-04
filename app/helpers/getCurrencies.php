@@ -2,9 +2,6 @@
 <?php
 
 
-use DOMDocument;
-use DOMXPath;
-
 
 function getCurrencies()
 {
