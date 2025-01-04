@@ -1,6 +1,11 @@
 
 <?php
 
+
+use DOMDocument;
+use DOMXPath;
+
+
 function getCurrencies()
 {
     $yesterday = (new DateTime('yesterday'))->format('Y-m-d');
