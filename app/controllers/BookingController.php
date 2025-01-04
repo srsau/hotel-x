@@ -81,6 +81,7 @@ class BookingController
         $script = '
         <script>
             window.hotelx_uname = ' . (isset($_SESSION['user']['name']) ? '"' . $_SESSION['user']['name'] . '"' : 'null') . ';
+            window.hotelx_preferred_currency = ' . (isset($_SESSION['preferred_currency']) ? '"' . $_SESSION['preferred_currency'] . '"' : 'null') . ';
         </script>
         <script src="/js/booking.js"></script>
     ';

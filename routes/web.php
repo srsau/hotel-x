@@ -26,6 +26,7 @@ $routes = [
     '/api/addons' => 'ApiController@getAddons',
     '/api/room' => 'ApiController@getRoomById',
     '/api/book' => 'BookingController@finalizeBooking',
+    '/api/convertAmount' => 'ApiController@convertAmount',
 ];
 
 return $routes;

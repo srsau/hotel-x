@@ -13,7 +13,7 @@
             <textarea class="form-control" id="description" name="description" rows="3" required><?php echo htmlspecialchars($room['description'] ?? ''); ?></textarea>
         </div>
         <div class="mb-3">
-            <label for="price_per_night" class="form-label">Price per Night</label>
+            <label for="price_per_night" class="form-label">Price per Night (USD)</label>
             <input type="number" step="0.01" class="form-control" id="price_per_night" name="price_per_night" value="<?php echo htmlspecialchars($room['price_per_night'] ?? ''); ?>" required>
         </div>
         <div class="mb-3">

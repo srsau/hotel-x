@@ -6,6 +6,10 @@ ini_set('display_errors', 1);
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['preferred_currency'])) {
+    $_SESSION['preferred_currency'] = 'USD'; 
+}
+
 
 // Include autoload
 require_once __DIR__ . '/../autoload.php';

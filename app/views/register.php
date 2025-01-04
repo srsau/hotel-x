@@ -11,5 +11,13 @@
         <label for="password" class="form-label">Password</label>
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
+    <div class="mb-3">
+        <label for="preferred_currency" class="form-label">Preferred Currency</label>
+        <select class="form-control" id="preferred_currency" name="preferred_currency">
+            <?php foreach ($currencies as $currency): ?>
+                <option value="<?php echo htmlspecialchars($currency); ?>"><?php echo htmlspecialchars($currency); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </form>

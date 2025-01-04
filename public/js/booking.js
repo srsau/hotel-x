@@ -165,15 +165,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const addonsCost = selectedAddons.reduce((total, addon) => total + parseFloat(addon.price), 0);
             const totalCost = (room.price_per_night * nights) + addonsCost;
             console.log({ addonsCost, totalCost })
-            const reviewDiv = document.getElementById('review-booking');
-            reviewDiv.innerHTML = `
-                <p><strong>Name:</strong> ${window.hotelx_uname}</p>
-                <p><strong>Period:</strong> ${startDate} to ${endDate} (${nights} nights)</p>
-                <p><strong>Guests:</strong> ${guests}</p>
-                <p><strong>Room:</strong> ${room.name}</p>
-                <p><strong>Addons:</strong> ${selectedAddons.map(addon => addon.name).join(', ')}</p>
-                <p><strong>Total Cost:</strong> $${totalCost.toFixed(2)}</p>
-            `;
+            fetch(`/api/convertAmount?amount=${totalCost}&currency=${window.hotelx_preferred_currency}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log({data})
+                const convertedTotalCost = data.convertedAmount;
+
+                const reviewDiv = document.getElementById('review-booking');
+                reviewDiv.innerHTML = `
+                    <p><strong>Name:</strong> ${window.hotelx_uname}</p>
+                    <p><strong>Period:</strong> ${startDate} to ${endDate} (${nights} nights)</p>
+                    <p><strong>Guests:</strong> ${guests}</p>
+                    <p><strong>Room:</strong> ${room.name}</p>
+                    <p><strong>Addons:</strong> ${selectedAddons.map(addon => addon.name).join(', ')}</p>
+                    <p><strong>Total Cost:</strong> ${convertedTotalCost}</p>
+                `;
+            })
+            .catch(error => console.error('Error fetching converted amount:', error));
         }).catch(error => console.error('Error fetching review data:', error));
     }
 

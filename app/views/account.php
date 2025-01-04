@@ -1,3 +1,7 @@
+<?php
+    require_once __DIR__ . '/../helpers/convertPrice.php';
+    $preferred_currency = $_SESSION['preferred_currency'];
+    ?>
 <div class="container mt-4">
     <h2>My Account</h2>
     <p>Welcome to your account page, <?php echo htmlspecialchars($_SESSION['user']['name']); ?>!</p>
@@ -23,7 +27,7 @@
                     <td><?= htmlspecialchars($booking['check_in_date']) ?></td>
                     <td><?= htmlspecialchars($booking['check_out_date']) ?></td>
                     <td><?= htmlspecialchars($booking['addon_names'] ?? 'None') ?></td>
-                    <td><?= htmlspecialchars($booking['total_price']) ?></td>
+                    <td><?= htmlspecialchars(convertPrice($booking['total_price'], $preferred_currency)) ?></td>
                     <td><?= htmlspecialchars($booking['status']) ?></td>
                     <td>
                         <?php if ($booking['status'] === 'valid'): ?>

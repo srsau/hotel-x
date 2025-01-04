@@ -5,6 +5,7 @@ namespace App\Controllers;
 use app\middleware\AuthMiddleware;
 use app\models\Booking;
 require_once __DIR__ . '/../fpdf/fpdf.php';
+require_once __DIR__ . '/../helpers/convertPrice.php';
 
 class PdfController
 {
@@ -24,6 +25,7 @@ class PdfController
         $bookingId = $_GET['booking_id'];
         $userId = $_SESSION['user']['id'];
         $booking = Booking::getBookingByIdAndUserId($bookingId, $userId);
+        $preferred_currency = $_SESSION['preferred_currency'];
 
         if (!$booking) {
             http_response_code(404);
@@ -71,7 +73,7 @@ class PdfController
         $pdf->Cell(0, 10, $booking['addon_names'], 1);
         $pdf->Ln();
         $pdf->Cell(50, 10, 'Total Price:', 1);
-        $pdf->Cell(0, 10, '$' . $booking['total_price'], 1);
+        $pdf->Cell(0, 10, convertPrice($booking['total_price'], $preferred_currency), 1);
         $pdf->Ln();
         $pdf->Cell(50, 10, 'Status:', 1);
         $pdf->Cell(0, 10, $booking['status'], 1);

@@ -1,10 +1,14 @@
+    <?php
+    require_once __DIR__ . '/../helpers/convertPrice.php';
+    $preferred_currency = $_SESSION['preferred_currency'];
+    ?>
 <div class="container mt-4">
     <div class="card">
         <div class="card-header text-center">
             <h1>
-                <?php echo htmlspecialchars($room['name']); ?>
-                <?php if ($room['popular']): ?>
-                    <span class="text-warning">&#9733;</span> <!-- Star icon -->
+            <?php echo htmlspecialchars($room['name']); ?>
+            <?php if ($room['popular']): ?>
+                    <span class="text-warning">&#9733;</span>
                 <?php endif; ?>
             </h1>
         </div>
@@ -29,7 +33,7 @@
                 <?php endif; ?>
             </div>
             <p class="my-2"><strong>Description:</strong> <?php echo htmlspecialchars($room['description']); ?></p>
-            <p class="my-2"><strong>Price per night:</strong> $<?php echo htmlspecialchars($room['price_per_night']); ?></p>
+            <p class="my-2"><strong>Price per night:</strong> <?php echo htmlspecialchars(convertPrice($room['price_per_night'], $preferred_currency)); ?></p>
             <p class="my-2"><strong>Capacity:</strong> <?php echo htmlspecialchars($room['capacity']); ?> people</p>
             <p class="my-2"><strong>Floor:</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
             <p class="my-2"><strong>Facilities:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars(implode(', ', $room['facilities'])) : 'N/A'; ?></p>

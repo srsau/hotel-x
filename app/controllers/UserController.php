@@ -11,6 +11,9 @@ require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
 use PHPMailer;
 use Exception;
 use phpmailerException;
+use DOMDocument;
+use DOMXPath;
+use DateTime;
 
 class UserController
 {
@@ -27,19 +30,21 @@ class UserController
             $email = $_POST['email'];
             $name = $_POST['name'];
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $preferred_currency = $_POST['preferred_currency'];
             $verification_code = bin2hex(random_bytes(16));
-
-            $user_id = User::create($email, $name, $password);
-
+    
+            $user_id = User::create($email, $name, $password, $preferred_currency);
+    
             Verification::create($user_id, $verification_code);
-
+    
             $this->sendVerificationEmail($email, $verification_code);
-
+    
             $message = "Registration successful! Please check your email to verify your account.";
             $title = 'Registration Successful';
             $view = __DIR__ . '/../views/message.php';
             require __DIR__ . '/../views/layout.php';
         } else {
+            $currencies = $this->getCurrencies();
             $view = __DIR__ . '/../views/register.php';
             require __DIR__ . '/../views/layout.php';
         }
@@ -117,8 +122,10 @@ class UserController
                         'id' => $user['id'],
                         'email' => $user['email'],
                         'name' => $user['name'],
+                        'preferred_currency' => $user['preferred_currency'],
                         'role' => $user['role']
                     ];
+                    $_SESSION['preferred_currency'] = $user['preferred_currency'];
                     echo '<script>
                     const currentStep = localStorage.getItem("currentStep");
                     if (currentStep) {
@@ -146,5 +153,31 @@ class UserController
         session_destroy();
         header('Location: /?logged_out=true');
         exit();
+    }
+
+    private function getCurrencies()
+    {
+        $yesterday = (new DateTime('yesterday'))->format('Y-m-d');
+    
+        $url = "https://www.xe.com/currencytables/?from=USD&date=$yesterday";
+
+        $html = file_get_contents($url);
+        
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html); 
+        
+        $xpath = new DOMXPath($dom);
+        $currencyNodes = $xpath->query('//table[contains(.,"Currency")]/tbody/tr/th');
+        
+        $currencies = ['USD'];
+        foreach ($currencyNodes as $node) {
+            $currencyCode = $node->nodeValue;
+            // $currencies[] = $currencyCode;
+            if ($currencyCode !== 'USD') { 
+                $currencies[] = $currencyCode;
+            }
+        }
+        
+        return $currencies;
     }
 }

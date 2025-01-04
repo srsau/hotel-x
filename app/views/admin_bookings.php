@@ -21,7 +21,7 @@
                     <td><?= htmlspecialchars($booking['check_in_date']) ?></td>
                     <td><?= htmlspecialchars($booking['check_out_date']) ?></td>
                     <td><?= htmlspecialchars($booking['addon_names'] ?? 'None') ?></td>
-                    <td><?= htmlspecialchars($booking['total_price']) ?></td>
+                    <td><?= "$" . htmlspecialchars($booking['total_price']) ?></td>
                     <td><?= htmlspecialchars($booking['status']) ?></td>
                     <td>
                         <?php if ($booking['status'] === 'valid'): ?>
