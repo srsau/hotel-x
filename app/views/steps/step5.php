@@ -1,4 +1,5 @@
 <div class="container mt-4">
+<?php if (isset($stepper)) echo $stepper; ?>
     <div id="step3">
         <h2>Revizuiește Rezervarea</h2>
 
@@ -9,6 +10,8 @@
         <?php endif; ?>
 
         <form method="post" action="/book?step=5">
+        <input type="hidden" name="current_step" value="5">
+
             <div class="row" id="available-rooms">
 
                 <?php if (!isset($_SESSION['user']['name'])): ?>
@@ -40,7 +43,9 @@
             </div>
 
             <a href="/book?step=<?= $step - 1 ?>" class="prev-step btn btn-secondary">Anterior</a>
-            <button class="next-step btn btn-primary mt-3" type="submit">Finalizează Rezervarea</button>
+           <?php if (isset($_SESSION['user']['id'])): ?>
+            <button class="next-step btn btn-primary " type="submit">Finalizează Rezervarea</button>
+            <?php endif; ?>
         </form>
     </div>
 </div>

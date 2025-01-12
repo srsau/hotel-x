@@ -1,4 +1,5 @@
 <div class="container mt-4">
+<?php if (isset($stepper)) echo $stepper; ?>
     <div id="step3">
         <h2>Selectează Adăugiri</h2>
 
@@ -8,6 +9,8 @@
             </div>
         <?php endif; ?>
         <form method="post" action="/book?step=4">
+        <input type="hidden" name="current_step" value="4">
+
             <div class="row" id="available-rooms">
                 <?php if (isset($addons) && count($addons) > 0): ?>
                     <?php foreach ($addons as $addon): ?>

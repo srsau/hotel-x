@@ -1,4 +1,5 @@
 <div class="container mt-4">
+<?php if (isset($stepper)) echo $stepper; ?>
     <div id="step1">
         <h2>Selectează Datele</h2>
 
@@ -9,6 +10,7 @@
         <?php endif; ?>
 
         <form method="post" action="/book?step=1">
+        <input type="hidden" name="current_step" value="1">
 
             <label for="start-date">Data Începerii:</label>
             <input type="date" 

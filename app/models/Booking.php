@@ -4,22 +4,39 @@ namespace App\Models;
 
 use app\Database;
 use PDO;
+use PDOException;
+use Exception;
 
 class Booking
 {
     public static function createBooking($userId, $roomId, $checkInDate, $checkOutDate, $addons, $totalPrice)
     {
         $db = Database::getInstance()->getConnection();
-        $encodedAddons = json_encode($addons); 
-        $stmt = $db->prepare("INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, addons, total_price, status, created_at) VALUES (:user_id, :room_id, :check_in_date, :check_out_date, :addons, :total_price, 'valid', NOW())");
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindParam(':room_id', $roomId, PDO::PARAM_INT);
-        $stmt->bindParam(':check_in_date', $checkInDate);
-        $stmt->bindParam(':check_out_date', $checkOutDate);
-        $stmt->bindParam(':addons', $encodedAddons); 
-        $stmt->bindParam(':total_price', $totalPrice);
-        $stmt->execute();
+        $encodedAddons = json_encode($addons);
+    
+        try {
+            $stmt = $db->prepare("INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, addons, total_price, status, created_at) 
+                                  VALUES (:user_id, :room_id, :check_in_date, :check_out_date, :addons, :total_price, 'valid', NOW())");
+    
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':room_id', $roomId, PDO::PARAM_INT);
+            $stmt->bindParam(':check_in_date', $checkInDate);
+            $stmt->bindParam(':check_out_date', $checkOutDate);
+            $stmt->bindParam(':addons', $encodedAddons);
+            $stmt->bindParam(':total_price', $totalPrice);
+    
+            $stmt->execute();
+    
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000 && strpos($e->getMessage(), "1062") !== false) {
+                throw new Exception("Nu poti rezerva aceeasi camera de doua ori in aceeasi perioada.");
+            } else {
+                throw new Exception("An error occurred: " . $e->getMessage());
+            }
+        }
     }
+    
+
 
     public static function getBookingsByUserId($userId)
     {
@@ -127,4 +144,3 @@ class Booking
         return $bookingDetails;
     }
 }
-?>

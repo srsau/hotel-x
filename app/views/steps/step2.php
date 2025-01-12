@@ -1,4 +1,5 @@
 <div class="container mt-4">
+<?php if (isset($stepper)) echo $stepper; ?>
     <div id="step2">
         <h2>Selectează Oaspeții</h2>
 
@@ -9,7 +10,8 @@
         <?php endif; ?>
 
         <form method="post" action="/book?step=2">
-            
+        <input type="hidden" name="current_step" value="2">
+
             <label for="guests">Numărul de Oaspeți:</label>
             <input type="number" 
                    id="guests" 

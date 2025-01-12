@@ -51,7 +51,7 @@ CREATE TABLE bookings (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE,
-    UNIQUE (room_id, check_in_date, check_out_date)
+    UNIQUE (room_id, check_in_date, check_out_date, user_id)
 );
 
 DROP TABLE IF EXISTS facilities;

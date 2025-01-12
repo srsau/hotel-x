@@ -23,7 +23,6 @@
                             <p class="card-text m-0"><strong>Preț pe noapte:</strong> <?php echo htmlspecialchars(convertPrice($room['price_per_night'],$preferred_currency)); ?></p>
                             <div>
                                 <a href="/room?id=<?php echo $room['id']; ?>" class="btn btn-primary">Detalii</a>
-                                <a href="#" class="btn btn-secondary">Rezervă</a>
                                 <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
                                     <a href="/room/edit?id=<?php echo $room['id']; ?>" class="btn btn-warning">Editează</a>
                                 <?php endif; ?>

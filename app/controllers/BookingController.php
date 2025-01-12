@@ -8,6 +8,7 @@ use app\models\Room;
 use Exception;
 
 require_once __DIR__ . '/../helpers/convertPrice.php';
+require_once __DIR__ . '/../views/steps/stepper.php';
 
 class BookingController
 {
@@ -27,8 +28,40 @@ class BookingController
         return $roomPrice + $addonsPrice;
     }
 
+    public function initializeBooking()
+    {
+        $roomId = $_GET['room_id'];
+        if (!isset($roomId)) {
+            header('Location: /404');
+            exit();
+        }
+
+        $room = Room::getRoomById($roomId);
+
+        if (!$room) {
+            header('Location: /404');
+            exit();
+        }
+
+
+        $_SESSION['booking'] = [
+            'step' => 1,
+            'data' => []
+        ];
+
+        $_SESSION['booking']['data']['start-date'] = date('Y-m-d');
+        $_SESSION['booking']['data']['room']['id'] = $roomId;
+        $_SESSION['booking']['data']['room']['name'] = $room['name'];
+
+        header('Location: /book?step=1');
+        exit();
+    }
+
     public function book()
     {
+        echo "<pre>";
+        var_dump($_SESSION['booking']['data']);
+        echo "</pre>";
         if (!isset($_SESSION['booking'])) {
             $_SESSION['booking'] = [
                 'step' => 1,
@@ -50,65 +83,67 @@ class BookingController
         $error = null;
 
         $startDate = isset($_SESSION['booking']['data']['start-date']) ? $_SESSION['booking']['data']['start-date'] : null;
-        $startDate = isset($_SESSION['booking']['data']['end-date']) ? $_SESSION['booking']['data']['end-date'] : null;
-        $startDate = isset($_SESSION['booking']['data']['guests']) ? $_SESSION['booking']['data']['guests'] : null;
-     
+        $endDate = isset($_SESSION['booking']['data']['end-date']) ? $_SESSION['booking']['data']['end-date'] : null;
+        $guests = isset($_SESSION['booking']['data']['guests']) ? $_SESSION['booking']['data']['guests'] : null;
+        $selectedRoomId = isset($_SESSION['booking']['data']['room']['id']) ? $_SESSION['booking']['data']['room']['id'] : null;
+        $selectedAddon = isset($_SESSION['booking']['data']['selected_addons']) ? $_SESSION['booking']['data']['selected_addons'] : [];
+
         // Process POST data when a user submits a form (handling the form submission)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $currentStep = $_POST['current_step'] ?? null;
+
+
+            if ($currentStep != $step) {
+                header('Location: /book?step=' . $step);
+                exit();
+            }
+
             if ($step === 1) {
                 $validationResult = $this->validateStep1($_POST);
                 if ($validationResult !== true) {
                     $error = $validationResult;
-                    $view = __DIR__ . '/../views/steps/step1.php';
-                    $data = $_POST;
+                    $data['start-date'] = $_POST['start-date'];
+                    $data['end-date'] = $_POST['end-date'];
                 } else {
                     $data = array_merge($data, $_POST);
                     $_SESSION['booking']['data'] = $data;
                     $_SESSION['booking']['step'] = 2;
                     header('Location: /book?step=2');
-                    exit();
                 }
             } elseif ($step === 2) {
                 $validationResult = $this->validateStep2($_POST);
+
                 if ($validationResult !== true) {
                     $error = $validationResult;
-                    $view = __DIR__ . '/../views/steps/step2.php';
-                    $data = $_POST; // Use POST data for prepopulation
+
+                    $data['guests'] = $_POST['guests'];
                 } else {
                     $data = array_merge($data, $_POST);
                     $_SESSION['booking']['data'] = $data;
-
                     $_SESSION['booking']['step'] = 3;
                     header('Location: /book?step=3');
-                    exit();
                 }
             } elseif ($step === 3) {
                 $validationResult = $this->validateStep3($_POST);
                 if ($validationResult !== true) {
                     $error = $validationResult;
-                    $view = __DIR__ . '/../views/steps/step3.php';
                     $data = $_POST;
                 } else {
                     $room = Room::getRoomById($_POST['selected_room'][0]);
-
                     $data['room']['id'] = $_POST['selected_room'][0];
                     $data['room']['name'] = $room['name'];
                     $_SESSION['booking']['data'] = $data;
                     $_SESSION['booking']['step'] = 4;
                     header('Location: /book?step=4');
-                    exit();
                 }
             } elseif ($step === 4) {
                 $validationResult = $this->validateStep4($_POST);
                 if ($validationResult !== true) {
                     $error = $validationResult;
-                    $view = __DIR__ . '/../views/steps/step4.php';
                     $data = $_POST;
                 } else {
                     $addons = Addon::getAllAddons();
                     $selectedAddons = [];
-
-
                     if (!empty($_POST['selected_addons']) && is_array($_POST['selected_addons'])) {
                         foreach ($_POST['selected_addons'] as $selectedAddonId) {
                             foreach ($addons as $addon) {
@@ -122,12 +157,10 @@ class BookingController
                             }
                         }
                     }
-
                     $data['selected_addons'] = $selectedAddons;
                     $_SESSION['booking']['data'] = $data;
                     $_SESSION['booking']['step'] = 5;
                     header('Location: /book?step=5');
-                    exit();
                 }
             } elseif ($step === 5) {
                 try {
@@ -156,7 +189,6 @@ class BookingController
 
                     $_SESSION['booking_success'] = "Rezervare facuta cu success!";
                     header('Location: /account');
-                    exit();
                 } catch (Exception $e) {
                     $error = $e->getMessage();
                 }
@@ -171,10 +203,6 @@ class BookingController
                 $view = __DIR__ . '/../views/steps/step2.php';
                 break;
             case 3:
-                $startDate = $_SESSION['booking']['data']['start-date'];
-                $endDate = $_SESSION['booking']['data']['end-date'];
-                $guests = $_SESSION['booking']['data']['guests'];
-
                 $rooms = Room::getAvailableRooms($startDate, $endDate, $guests);
                 $view = __DIR__ . '/../views/steps/step3.php';
                 break;
@@ -183,23 +211,23 @@ class BookingController
                 $view = __DIR__ . '/../views/steps/step4.php';
                 break;
             case 5:
-                $startDate = $_SESSION['booking']['data']['start-date'];
-                $endDate = $_SESSION['booking']['data']['end-date'];
-                $guests = $_SESSION['booking']['data']['guests'];
-                $roomId = $_SESSION['booking']['data']['selected_room'];
-                $addons = $_SESSION['booking']['data']['selected_addons'] ?? [];
 
                 $startDateTime = new \DateTime($startDate);
                 $endDateTime = new \DateTime($endDate);
                 $interval = $startDateTime->diff($endDateTime);
                 $nights = $interval->days;
 
-                $room = Room::getRoomById($roomId);
+                $room = Room::getRoomById($selectedRoomId);
+                // echo "<pre>";
+                // var_dump($room);
+                // var_dump($selectedRoomId);
+                // var_dump($_SESSION['booking']['data']);
+                // echo "</pre>";
                 $roomPrice = $room['price_per_night'] * $nights;
 
                 $addonsPrices = array_map(function ($addon) {
                     return $addon['price'];
-                }, $addons);
+                }, $selectedAddon);
                 $totalAddonsPrice = array_sum($addonsPrices);
 
                 $convertedTotalCost = convertPrice(($roomPrice + $totalAddonsPrice), $_SESSION['preferred_currency']);
@@ -209,12 +237,14 @@ class BookingController
                 $view = __DIR__ . '/../views/steps/step5.php';
                 break;
             default:
-                $view = __DIR__ . '/../views/steps/finalize.php';
+                $view = __DIR__ . '/../views/steps/step1.php';
                 break;
         }
 
         $keywords = ['rezerva', 'camera', 'concediu'];
         $description = 'Rezerva acum o camera pentru urmatorul tau concediu!';
+        // $stepper = __DIR__ . '/../views/steps/stepper.php';
+        $stepper = renderStepper($step);
 
         require __DIR__ . '/../views/layout.php';
     }
