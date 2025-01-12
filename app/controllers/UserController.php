@@ -123,16 +123,11 @@ class UserController
                         'role' => $user['role']
                     ];
                     $_SESSION['preferred_currency'] = $user['preferred_currency'];
-                    echo '<script>
-                    const currentStep = localStorage.getItem("currentStep");
-                    if (currentStep) {
-                        localStorage.removeItem("currentStep");
-                        window.location.href = "/book?step=" + currentStep;
-                    } else {
-                        window.location.href = "/book";
+                    if (isset($_SESSION['booking']['step'])) {
+                        header('Location: /book?step=' . $_SESSION['booking']['step']);
+                        exit();
                     }
-                </script>';
-                    exit();
+                    
                 } else {
                     $error = "Please verify your email before logging in.";
                 }

@@ -11,6 +11,15 @@ $currencies = getCurrencies();
 
     <h4>Setări Cont</h4>
 
+
+    <?php if (isset($_SESSION['booking_success']) && $_SESSION['booking_success']): ?>
+        <div class="alert alert-success" role="alert">
+            <?= htmlspecialchars($_SESSION['booking_success']); ?>
+        </div>
+        <?php unset($_SESSION['booking_success']);  ?>
+    <?php endif; ?>
+
+
     <div class="mb-3">
         <label for="preferred_currency" class="form-label">Moneda Preferată</label>
         <select class="form-control" id="preferred_currency" name="preferred_currency" onchange="changeCurrency(this.value)">
