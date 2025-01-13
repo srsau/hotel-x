@@ -1,7 +1,7 @@
 <div class="container mt-4">
 <?php if (isset($stepper)) echo $stepper; ?>
     <div id="step3">
-        <h2>Selectează Adăugiri</h2>
+        <h2>Selectează Addons</h2>
 
         <?php if (isset($error) && $error): ?>
             <div class="alert alert-danger" role="alert">

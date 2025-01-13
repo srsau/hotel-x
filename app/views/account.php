@@ -39,7 +39,7 @@ $currencies = getCurrencies();
                 <th>Cameră</th>
                 <th>Data Check-in</th>
                 <th>Data Check-out</th>
-                <th>Adăugiri</th>
+                <th>Addons</th>
                 <th>Preț Total</th>
                 <th>Stare</th>
                 <th>Acțiuni</th>

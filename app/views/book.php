@@ -24,7 +24,7 @@
             <button class="next-step btn btn-primary mt-3" disabled>Următorul</button>
         </div>
         <div id="step4" style="display:none;">
-            <h2>Selectează Adăugiri</h2>
+            <h2>Selectează Addons</h2>
             <div class="row" id="available-addons">
             </div>
             <button class="prev-step btn btn-secondary mt-3">Anterior</button>

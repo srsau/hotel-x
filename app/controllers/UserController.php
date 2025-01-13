@@ -20,10 +20,17 @@ class UserController
         if ($_SERVER['REQUEST_URI'] === '/logout') {
             AuthMiddleware::handle();
         }
+
     }
 
     public function register()
     {
+        if (isset($_SESSION['user'])) {
+            header('Location: /');
+            exit();
+        }
+
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $name = $_POST['name'];
@@ -105,6 +112,11 @@ class UserController
 
     public function login()
     {
+        if (isset($_SESSION['user'])) {
+            header('Location: /');
+            exit();
+        }
+
         $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
@@ -126,8 +138,10 @@ class UserController
                     if (isset($_SESSION['booking']['step'])) {
                         header('Location: /book?step=' . $_SESSION['booking']['step']);
                         exit();
+                    } else {
+                        header('Location: /');
+                        exit();
                     }
-                    
                 } else {
                     $error = "Please verify your email before logging in.";
                 }

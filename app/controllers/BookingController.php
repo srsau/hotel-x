@@ -57,11 +57,18 @@ class BookingController
         exit();
     }
 
+    public function resetBooking()
+    {
+        unset($_SESSION['booking']);
+        header('Location: /book?step=1');
+        exit();
+    }
+
     public function book()
     {
-        echo "<pre>";
-        var_dump($_SESSION['booking']['data']);
-        echo "</pre>";
+        // echo "<pre>";
+        // var_dump($_SESSION['booking']['data']);
+        // echo "</pre>";
         if (!isset($_SESSION['booking'])) {
             $_SESSION['booking'] = [
                 'step' => 1,
@@ -70,7 +77,7 @@ class BookingController
         }
 
         $step = isset($_GET['step']) ? (int) $_GET['step'] : $_SESSION['booking']['step'];
-        $step = max(1, min($step, 5));  // Assuming 5 steps, adjust as needed
+        $step = max(1, min($step, 5)); 
 
         // Check if the user has completed the previous steps
         if ($step > $_SESSION['booking']['step']) {

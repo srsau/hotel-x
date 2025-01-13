@@ -47,5 +47,8 @@
             <button class="next-step btn btn-primary " type="submit">Finalizează Rezervarea</button>
             <?php endif; ?>
         </form>
+        <form method="post" action="/reset-booking" class="mt-3">
+            <button type="submit" class="btn btn-secondary">Resetare</button>
+        </form>
     </div>
 </div>

@@ -17,6 +17,16 @@ class Room
         if (!is_numeric($price_per_night) || !is_numeric($capacity) || !is_numeric($floor) || !is_numeric($available_rooms)) {
             throw new Exception("Price per night, capacity, floor, and available rooms must be numeric.");
         }
+
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT COUNT(*) FROM rooms WHERE name = :name");
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            throw new Exception("A room with this name already exists.");
+        }
     }
 
     public static function getAllRooms()

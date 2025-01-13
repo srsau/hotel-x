@@ -37,17 +37,17 @@
                 </ul>
                 <ul class="navbar-nav">
                     <?php if (isset($_SESSION['user'])): ?>
+                        <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin">Admin</a>
+                            </li>
+                        <?php endif; ?>
                         <li class="nav-item">
                             <a class="nav-link" href="/account">Contul Meu</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Deconectare</a>
                         </li>
-                        <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin">Admin</a>
-                            </li>
-                        <?php endif; ?>
                     <?php else: ?>
                         <li class="nav-item">
                             <a class="nav-link" href="/login">Autentificare</a>
