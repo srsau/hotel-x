@@ -12,7 +12,7 @@
         <form method="post" action="/book?step=1">
         <input type="hidden" name="current_step" value="1">
 
-            <label for="start-date">Data Începerii:</label>
+            <label for="start-date">Data check-in:</label>
             <input type="date" 
                    id="start-date" 
                    name="start-date" 
@@ -20,7 +20,7 @@
                    value="<?= isset($data['start-date']) ? htmlspecialchars($data['start-date']) : ''; ?>" 
                    required> 
 
-            <label for="end-date">Data Încheierii:</label>
+            <label for="end-date">Data check-out:</label>
             <input type="date" 
                    id="end-date" 
                    name="end-date" 

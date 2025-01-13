@@ -29,6 +29,7 @@ $routes = [
     '/api/convertAmount' => 'ApiController@convertAmount',
     '/initializeBooking' => 'BookingController@initializeBooking',
     '/reset-booking' => 'BookingController@resetBooking',
+    '/prezentare' => 'PublicController@projectDescription',
 ];
 
 return $routes;
