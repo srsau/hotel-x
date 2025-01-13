@@ -6,13 +6,6 @@ use app\models\User;
 use app\models\Verification;
 use app\middleware\AuthMiddleware;
 
-require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
-require_once __DIR__ . '/../helpers/getCurrencies.php';
-
-use PHPMailer;
-use Exception;
-use phpmailerException;
-
 class UserController
 {
     public function __construct()
@@ -57,37 +50,13 @@ class UserController
 
     private function sendVerificationEmail($email, $verification_code)
     {
-        $mail = new PHPMailer(true);
+        $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+        $verification_link = $base_url . "/verify?code=$verification_code";
+        $message = "Welcome to Hotel X! To get started, please confirm your email address by clicking the link below:<br><br> 
+        <a href='$verification_link'>Verify My Email</a><br><br> 
+        If you didn’t sign up for Hotel X, you can safely ignore this email.";
 
-        try {
-            $mail->IsSMTP();
-            $mail->SMTPDebug  = 0;
-            $mail->SMTPAuth   = true;
-
-            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-            $verification_link = $base_url . "/verify?code=$verification_code";
-            $message = "Welcome to Hotel X! To get started, please confirm your email address by clicking the link below:<br><br> 
-            <a href='$verification_link'>Verify My Email</a><br><br> 
-            If you didn’t sign up for Hotel X, you can safely ignore this email.";
-            
-            $mail->SMTPSecure = "ssl";
-            $mail->Host       = "smtp.gmail.com";
-            $mail->Port       = 465;
-            $mail->Username   = getenv('EMAIL_USERNAME');              // GMAIL username
-            $mail->Password   = getenv('EMAIL_PASSWORD');            // GMAIL password
-            $mail->AddReplyTo('escdev7@gmail.com');
-            $mail->AddAddress($email);
-            
-            $mail->SetFrom('escdev7@gmail.com', 'Hotel X');
-            $mail->Subject = 'Hotel X - Verification Code';
-            $mail->AltBody = 'To view this post you need a compatible HTML viewer!';
-            $mail->MsgHTML($message);
-            $mail->Send();
-        } catch (phpmailerException $e) {
-            echo $e->errorMessage(); //error from PHPMailer
-        } catch (Exception $e) {
-            echo $e->getMessage(); //error from anything else!
-        }
+        sendEmail($email, 'Hotel X - Verification Code', $message);
     }
 
     public function verify()

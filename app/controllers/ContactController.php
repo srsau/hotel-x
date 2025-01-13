@@ -3,10 +3,9 @@
 namespace App\Controllers;
 
 require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
+require_once __DIR__ . '/../helpers/emailHelper.php';
 
-use PHPMailer;
 use Exception;
-use phpmailerException;
 
 class ContactController
 {
@@ -53,36 +52,17 @@ class ContactController
                         $mailBody .= "Phone: " . $phone . "<br>";
                         $mailBody .= "Message: " . $message . "<br>";
 
-                        $mail = new PHPMailer(true);
-
-                        $mail->IsSMTP();
-
                         try {
-                            $mail->SMTPDebug = 0;
-                            $mail->SMTPAuth = true;
+                            // admin
+                            sendEmail('escdev7@gmail.com', 'Contact Form Submission - ' . $name, $mailBody, $email, $email);
 
-                            $toEmail = 'escdev7@gmail.com';
-                            $nume = 'DAW Project';
-
-                            $mail->SMTPSecure = "ssl";
-                            $mail->Host = "smtp.gmail.com";
-                            $mail->Port = 465;
-                            $mail->Username = getenv('EMAIL_USERNAME'); // GMAIL username
-                            $mail->Password = getenv('EMAIL_PASSWORD'); // GMAIL password
-                            $mail->AddReplyTo($email, $name);
-                            $mail->AddAddress($toEmail, $nume);
-                            $mail->addCustomHeader("BCC: " . $email);
-
-                            $mail->SetFrom($email, $name);
-                            $mail->Subject = 'Contact Form Submission' . ' - ' . $name;
-                            $mail->AltBody = 'To view this post you need a compatible HTML viewer!';
-                            $mail->MsgHTML($mailBody);
-
-                            $mail->Send();
+                            // sender
+                            $confirmationMessage = "Dear $name,<br><br>Thank you for contacting us. We have received your message and will get back to you shortly.<br><br>Regards,<br>Hotel X";
+                            sendEmail($email, 'Contact Form Submission Confirmation', $confirmationMessage);
 
                             $returnMsg = 'Your message has been submitted successfully.';
                         } catch (Exception $e) {
-                            $returnMsg = 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo;
+                            $returnMsg = 'Message could not be sent. Mailer Error: ' . $e->getMessage();
                         }
                     } else {
                         $returnMsg = 'Robot verification failed, please try again.';

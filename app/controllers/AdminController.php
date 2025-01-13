@@ -6,11 +6,6 @@ use app\middleware\AuthMiddleware;
 use app\models\Booking;
 use app\models\Analytics;
 
-require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
-
-use PHPMailer;
-use Exception;
-use phpmailerException;
 
 class AdminController
 {
@@ -128,36 +123,18 @@ class AdminController
 
     private function sendCancellationEmail($bookingDetails, $reason)
     {
-        $mail = new PHPMailer(true);
+        $message = "
+            Dear {$bookingDetails['user_name']},<br><br>
+            Your booking has been canceled for the following reason: $reason<br><br>
+            Booking Details:<br>
+            Room: {$bookingDetails['room_name']}<br>
+            Check-in Date: {$bookingDetails['check_in_date']}<br><br>
+            We apologize for any inconvenience caused.<br><br>
+            Regards,<br>
+            Hotel X
+        ";
 
-        try {
-            $mail->IsSMTP();
-            $mail->SMTPDebug  = 0;
-            $mail->SMTPAuth   = true;
-            $mail->SMTPSecure = "ssl";
-            $mail->Host       = "smtp.gmail.com";
-            $mail->Port       = 465;
-            $mail->Username   = getenv('EMAIL_USERNAME');
-            $mail->Password   = getenv('EMAIL_PASSWORD');
-            $mail->AddReplyTo('no-reply@hotelx.com', 'Hotel X');
-            $mail->AddAddress($bookingDetails['user_email']);
-            $mail->SetFrom('no-reply@hotelx.com', 'Hotel X');
-            $mail->Subject = 'Booking Cancellation';
-            $mail->AltBody = 'To view this email, please use an HTML compatible email viewer!';
-            $mail->MsgHTML("
-                Dear {$bookingDetails['user_name']},<br><br>
-                Your booking has been canceled for the following reason: $reason<br><br>
-                Booking Details:<br>
-                Room: {$bookingDetails['room_name']}<br>
-                Check-in Date: {$bookingDetails['check_in_date']}<br><br>
-                We apologize for any inconvenience caused.<br><br>
-                Regards,<br>
-                Hotel X
-            ");
-            $mail->Send();
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
+        sendEmail($bookingDetails['user_email'], 'Booking Cancellation', $message);
     }
 }
 ?>
