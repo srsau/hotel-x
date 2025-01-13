@@ -1,10 +1,5 @@
 <?php
 
-
-require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
-require_once __DIR__ . '/../helpers/emailHelper.php';
-
-
 function sendEmail($to, $subject, $body, $replyTo = null, $bcc = null)
 {
     $mail = new PHPMailer(true);

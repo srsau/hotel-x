@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-require_once __DIR__ . '/../phpmailer/class.phpmailer.php';
+require_once __DIR__ . '/../libs/phpmailer/class.phpmailer.php';
 require_once __DIR__ . '/../helpers/emailHelper.php';
 
 use Exception;

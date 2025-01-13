@@ -97,7 +97,7 @@ class AdminController
         foreach ($data as $row) {
             $angle = ($row['count'] / $total) * 360;
             $angleEnd = $angleStart + $angle;
-            $color = $colors[$row[$labelKey]];
+            $color = $colors[$row[$labelKey]] ?? imagecolorallocate($image, 0, 0, 0); // Default to black if color not found
             imagefilledarc($image, $width / 2, $height / 2, $width - 10, $height - 10, $angleStart, $angleEnd, $color, IMG_ARC_PIE);
             $angleStart = $angleEnd;
         }
@@ -107,7 +107,7 @@ class AdminController
         $legendY = $height + 10;
         $fontSize = 5;
         foreach ($data as $row) {
-            $color = $colors[$row[$labelKey]];
+            $color = $colors[$row[$labelKey]] ?? imagecolorallocate($image, 0, 0, 0); // Default to black if color not found
             imagefilledrectangle($image, $legendX, $legendY, $legendX + 20, $legendY + 20, $color);
             imagestring($image, $fontSize, $legendX + 30, $legendY + 5, $row[$labelKey] . ' (' . $row['count'] . ')', imagecolorallocate($image, 0, 0, 0));
             $legendY += 30;
