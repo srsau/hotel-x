@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../libs/phpmailer/class.phpmailer.php';
+use PHPMailer;
+
 function sendEmail($to, $subject, $body, $replyTo = null, $bcc = null)
 {
     $mail = new PHPMailer(true);

@@ -51,6 +51,8 @@ class RoomController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
+                $this->validateRoomData($_POST);
+
                 $name = $_POST['name'];
                 $description = $_POST['description'];
                 $price_per_night = $_POST['price_per_night'];
@@ -103,27 +105,33 @@ class RoomController
             }
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $name = $_POST['name'];
-                $description = $_POST['description'];
-                $price_per_night = $_POST['price_per_night'];
-                $capacity = $_POST['capacity'];
-                $floor = $_POST['floor'];
-                $popular = isset($_POST['popular']) ? 1 : 0;
-                $facilities = $_POST['facilities'] ?? [];
-                $available_rooms = $_POST['available_rooms'];
+                try {
+                    $this->validateRoomData($_POST);
 
-                $image_url = $this->uploadImage($_FILES['image_url'], $room['image_url']);
-                $images = $this->uploadImages($_FILES['images'], $room['images']);
+                    $name = $_POST['name'];
+                    $description = $_POST['description'];
+                    $price_per_night = $_POST['price_per_night'];
+                    $capacity = $_POST['capacity'];
+                    $floor = $_POST['floor'];
+                    $popular = isset($_POST['popular']) ? 1 : 0;
+                    $facilities = $_POST['facilities'] ?? [];
+                    $available_rooms = $_POST['available_rooms'];
 
-                if (!$image_url) {
-                    throw new Exception("Main image is required.");
+                    $image_url = $this->uploadImage($_FILES['image_url'], $room['image_url']);
+                    $images = $this->uploadImages($_FILES['images'], $room['images']);
+
+                    if (!$image_url) {
+                        throw new Exception("Main image is required.");
+                    }
+
+                    Room::updateRoom($roomId, $name, $description, $image_url, $images, $price_per_night, $capacity, $floor, $popular, $available_rooms);
+                    Facility::updateFacilities($roomId, $facilities);
+
+                    header('Location: /');
+                    exit();
+                } catch (Exception $e) {
+                    $error = $e->getMessage();
                 }
-
-                Room::updateRoom($roomId, $name, $description, $image_url, $images, $price_per_night, $capacity, $floor, $popular, $available_rooms);
-                Facility::updateFacilities($roomId, $facilities);
-
-                header('Location: /');
-                exit();
             }
 
             $facilities = Facility::getAllFacilities();
@@ -142,9 +150,35 @@ class RoomController
         }
     }
 
+    private function validateRoomData($data)
+    {
+        if (empty($data['name']) || empty($data['description']) || empty($data['price_per_night']) || 
+            empty($data['capacity']) || empty($data['floor']) || empty($data['available_rooms'])) {
+            throw new Exception("All fields are required.");
+        }
+
+        if (!is_numeric($data['price_per_night']) || !is_numeric($data['capacity']) || 
+            !is_numeric($data['floor']) || !is_numeric($data['available_rooms'])) {
+            throw new Exception("Numeric fields must be numbers.");
+        }
+
+        if ($data['price_per_night'] < 0 || $data['capacity'] < 0 || $data['floor'] < 0 || $data['available_rooms'] < 0) {
+            throw new Exception("Numeric fields must be positive.");
+        }
+
+        if (empty($data['facilities']) || !is_array($data['facilities']) || count($data['facilities']) === 0) {
+            throw new Exception("At least one facility must be selected.");
+        }
+    }
+
     private function uploadImage($file, $existingImage = null)
     {
         if ($file['error'] === UPLOAD_ERR_OK) {
+            $mimeType = mime_content_type($file['tmp_name']);
+            if (strpos($mimeType, 'image/') !== 0) {
+                throw new Exception("File is not an image.");
+            }
+
             $targetDir = __DIR__ . '/../../public/images/';
             $targetFile = $targetDir . basename($file['name']);
             move_uploaded_file($file['tmp_name'], $targetFile);
@@ -158,6 +192,11 @@ class RoomController
         $uploadedImages = [];
         foreach ($files['name'] as $key => $name) {
             if ($files['error'][$key] === UPLOAD_ERR_OK) {
+                $mimeType = mime_content_type($files['tmp_name'][$key]);
+                if (strpos($mimeType, 'image/') !== 0) {
+                    throw new Exception("One of the files is not an image.");
+                }
+
                 $targetDir = __DIR__ . '/../../public/images/';
                 $targetFile = $targetDir . basename($name);
                 move_uploaded_file($files['tmp_name'][$key], $targetFile);

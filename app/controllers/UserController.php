@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 require_once __DIR__ . '/../helpers/getCurrencies.php';
 require_once __DIR__ . '/../helpers/csrf_token.php';
+require_once __DIR__ . '/../helpers/emailHelper.php';
 
 
 use app\models\User;

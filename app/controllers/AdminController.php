@@ -5,6 +5,7 @@ namespace App\Controllers;
 use app\middleware\AuthMiddleware;
 use app\models\Booking;
 use app\models\Analytics;
+require_once __DIR__ . '/../helpers/emailHelper.php';
 
 use app\middleware\AdminAuthMiddleware;
 

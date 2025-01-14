@@ -14,19 +14,19 @@
         </div>
         <div class="mb-3">
             <label for="price_per_night" class="form-label">Preț pe Noapte (USD)</label>
-            <input type="number" step="0.01" class="form-control" id="price_per_night" name="price_per_night" value="<?php echo htmlspecialchars($room['price_per_night'] ?? ''); ?>" required>
+            <input type="number" step="0.01" class="form-control" id="price_per_night" name="price_per_night" value="<?php echo htmlspecialchars($room['price_per_night'] ?? ''); ?>" required min="0">
         </div>
         <div class="mb-3">
             <label for="capacity" class="form-label">Capacitate</label>
-            <input type="number" class="form-control" id="capacity" name="capacity" value="<?php echo htmlspecialchars($room['capacity'] ?? ''); ?>" required>
+            <input type="number" class="form-control" id="capacity" name="capacity" value="<?php echo htmlspecialchars($room['capacity'] ?? ''); ?>" required min="0">
         </div>
         <div class="mb-3">
             <label for="floor" class="form-label">Etaj</label>
-            <input type="number" class="form-control" id="floor" name="floor" value="<?php echo htmlspecialchars($room['floor'] ?? ''); ?>" required>
+            <input type="number" class="form-control" id="floor" name="floor" value="<?php echo htmlspecialchars($room['floor'] ?? ''); ?>" required min="0">
         </div>
         <div class="mb-3">
             <label for="available_rooms" class="form-label">Camere Disponibile</label>
-            <input type="number" class="form-control" id="available_rooms" name="available_rooms" value="<?php echo htmlspecialchars($room['available_rooms'] ?? ''); ?>" required>
+            <input type="number" class="form-control" id="available_rooms" name="available_rooms" value="<?php echo htmlspecialchars($room['available_rooms'] ?? ''); ?>" required min="0">
         </div>
         <div class="mb-3">
             <label for="popular" class="form-label">Popular</label>
