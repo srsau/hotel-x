@@ -1,7 +1,8 @@
 <?php
 // phpinfo();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
 require_once __DIR__ . '/../autoload.php';
 require_once __DIR__ . '/../app/helpers/analytics_helper.php';
 require_once __DIR__ . '/../app/helpers/csrf_token.php';
