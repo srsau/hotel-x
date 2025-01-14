@@ -10,6 +10,8 @@
         <?php endif; ?>
 
         <form method="post" action="/book?step=5">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+
         <input type="hidden" name="current_step" value="5">
 
             <div class="row" id="available-rooms">

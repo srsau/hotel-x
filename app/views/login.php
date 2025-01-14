@@ -12,5 +12,6 @@
         <label for="password" class="form-label">Parolă</label>
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
     <button type="submit" class="btn btn-primary">Autentificare</button>
 </form>

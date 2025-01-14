@@ -9,6 +9,9 @@ use Exception;
 
 require_once __DIR__ . '/../helpers/convertPrice.php';
 require_once __DIR__ . '/../views/steps/stepper.php';
+require_once __DIR__ . '/../helpers/csrf_token.php';
+
+use app\helpers\Csrf;
 
 class BookingController
 {
@@ -74,7 +77,7 @@ class BookingController
         }
 
         $step = isset($_GET['step']) ? (int) $_GET['step'] : $_SESSION['booking']['step'];
-        $step = max(1, min($step, 5)); 
+        $step = max(1, min($step, 5));
 
         // Check if the user has completed the previous steps
         if ($step > $_SESSION['booking']['step']) {
@@ -170,6 +173,12 @@ class BookingController
                     if (!isset($_SESSION['user']['id'])) {
                         throw new Exception("User not logged in.");
                     }
+                    $csrfToken = $_POST['csrf_token'] ?? null;
+
+                    if (!Csrf::validateToken($csrfToken)) {
+                        throw new Exception("Invalid csrf token.");
+                    }
+
 
                     $userId = $_SESSION['user']['id'];
                     $data = $_SESSION['booking']['data'];
@@ -191,6 +200,7 @@ class BookingController
                     unset($_SESSION['booking']);
 
                     $_SESSION['booking_success'] = "Rezervare facuta cu success!";
+                    Csrf::regenerateToken();
                     header('Location: /account');
                 } catch (Exception $e) {
                     $error = $e->getMessage();

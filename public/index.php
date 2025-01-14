@@ -2,6 +2,10 @@
 // phpinfo();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+require_once __DIR__ . '/../autoload.php';
+require_once __DIR__ . '/../app/helpers/analytics_helper.php';
+require_once __DIR__ . '/../app/helpers/csrf_token.php';
+use app\helpers\Csrf;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,9 +14,7 @@ if (!isset($_SESSION['preferred_currency'])) {
     $_SESSION['preferred_currency'] = 'USD'; 
 }
 
-// Include autoload
-require_once __DIR__ . '/../autoload.php';
-require_once __DIR__ . '/../app/helpers/analytics_helper.php';
+Csrf::generateToken();
 
 // Track analytics
 trackAnalytics();

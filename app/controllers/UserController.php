@@ -1,10 +1,14 @@
 <?php
-
 namespace App\Controllers;
+
+require_once __DIR__ . '/../helpers/getCurrencies.php';
+require_once __DIR__ . '/../helpers/csrf_token.php';
+
 
 use app\models\User;
 use app\models\Verification;
 use app\middleware\AuthMiddleware;
+use app\helpers\Csrf;
 
 class UserController
 {
@@ -86,8 +90,20 @@ class UserController
             exit();
         }
 
+      
+
         $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrfToken = $_POST['csrf_token'] ?? null;
+
+            if (!Csrf::validateToken($csrfToken)) {
+                $error = "Invalid csrf token.";
+                $title = 'Login Failed';
+                $view = __DIR__ . '/../views/login.php';
+                require __DIR__ . '/../views/layout.php';
+                return;
+            }
+
             $email = $_POST['email'];
             $password = $_POST['password'];
 
@@ -104,6 +120,7 @@ class UserController
                         'role' => $user['role']
                     ];
                     $_SESSION['preferred_currency'] = $user['preferred_currency'];
+                    Csrf::regenerateToken();
                     if (isset($_SESSION['booking']['step'])) {
                         header('Location: /book?step=' . $_SESSION['booking']['step']);
                         exit();

@@ -6,6 +6,7 @@
     <?php endif; ?>
     <div id="message">
         <form action="/contact/submit" method="post">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <div class="mb-3">
                 <label for="name" class="form-label">Nume:</label>
                 <input type="text" id="name" name="name" class="form-control" required value="<?php echo isset($_SESSION['user']['name']) ? htmlspecialchars($_SESSION['user']['name']) : ''; ?>">

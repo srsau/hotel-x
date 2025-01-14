@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 require_once __DIR__ . '/../libs/phpmailer/class.phpmailer.php';
 require_once __DIR__ . '/../helpers/emailHelper.php';
+require_once __DIR__ . '/../helpers/csrf_token.php';
+use app\helpers\Csrf;
 
 use Exception;
 
@@ -26,7 +28,18 @@ class ContactController
     {
         $returnMsg = '';
 
+
         if (isset($_POST['submit'])) {
+
+            $csrfToken = $_POST['csrf_token'] ?? null;
+
+            if (!Csrf::validateToken($csrfToken)) {
+                $error = "Invalid csrf token.";
+                $view = __DIR__ . '/../views/error.php';
+                require __DIR__ . '/../views/layout.php';
+                return;
+            }
+
             if (!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['phone'])) {
                 if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
                     $secret_key = getenv('RECAPTCHA_SECRET_KEY');
@@ -53,8 +66,9 @@ class ContactController
                             // sender
                             $confirmationMessage = "Dear $name,<br><br>Thank you for contacting us. We have received your message and will get back to you shortly.<br><br>Regards,<br>Hotel X";
                             sendEmail($email, 'Contact Form Submission Confirmation', $confirmationMessage);
-
+                                                        
                             $returnMsg = 'Your message has been submitted successfully.';
+                            Csrf::regenerateToken();
                         } catch (Exception $e) {
                             $returnMsg = 'Message could not be sent. Mailer Error: ' . $e->getMessage();
                         }
