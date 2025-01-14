@@ -4,7 +4,6 @@ use app\models\Analytics;
 
 function trackAnalytics()
 {
-    // Define routes to exclude from tracking
     $excludeRoutes = [
         '/favicon.ico',
     ];
@@ -12,7 +11,6 @@ function trackAnalytics()
     // Get the current route
     $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-    // Check if the route should be excluded from tracking
     $shouldTrack = true;
     foreach ($excludeRoutes as $route) {
         if (strpos($requestUri, $route) === 0) {
@@ -21,7 +19,6 @@ function trackAnalytics()
         }
     }
 
-    // Track analytics if the route is not excluded
     if ($shouldTrack) {
         $ip_address = $_SERVER['REMOTE_ADDR'];
         $page = $_SERVER['REQUEST_URI'];

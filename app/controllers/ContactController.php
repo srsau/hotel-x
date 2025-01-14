@@ -27,20 +27,14 @@ class ContactController
         $returnMsg = '';
 
         if (isset($_POST['submit'])) {
-            // Form fields validation check
             if (!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['phone'])) {
-                // reCAPTCHA checkbox validation
                 if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
-                    // Google reCAPTCHA API secret key
                     $secret_key = getenv('RECAPTCHA_SECRET_KEY');
 
-                    // reCAPTCHA response verification
                     $verify_captcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $_POST['g-recaptcha-response']);
 
-                    // Decode reCAPTCHA response
                     $verify_response = json_decode($verify_captcha);
 
-                    // Check if reCAPTCHA response returns success
                     if ($verify_response->success) {
                         $name = $_POST['name'];
                         $email = $_POST['email'];

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use app\models\Room;
 use app\models\Facility;
 use Exception;
+use app\middleware\AdminAuthMiddleware;
 
 class RoomController
 {
@@ -44,6 +45,8 @@ class RoomController
 
     public function create()
     {
+        AdminAuthMiddleware::ensureAdmin();
+
         $error = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -83,6 +86,8 @@ class RoomController
 
     public function edit()
     {
+        AdminAuthMiddleware::ensureAdmin();
+
         $error = null;
 
         try {

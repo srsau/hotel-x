@@ -6,16 +6,14 @@ use app\middleware\AuthMiddleware;
 use app\models\Booking;
 use app\models\Analytics;
 
+use app\middleware\AdminAuthMiddleware;
 
 class AdminController
 {
     public function __construct()
     {
         AuthMiddleware::handle();
-        if ($_SESSION['user']['role'] !== 'admin') {
-            header('Location: /');
-            exit();
-        }
+        AdminAuthMiddleware::ensureAdmin();
     }
 
     public function index()

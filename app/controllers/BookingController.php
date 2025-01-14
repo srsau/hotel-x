@@ -66,9 +66,6 @@ class BookingController
 
     public function book()
     {
-        // echo "<pre>";
-        // var_dump($_SESSION['booking']['data']);
-        // echo "</pre>";
         if (!isset($_SESSION['booking'])) {
             $_SESSION['booking'] = [
                 'step' => 1,
@@ -95,7 +92,6 @@ class BookingController
         $selectedRoomId = isset($_SESSION['booking']['data']['room']['id']) ? $_SESSION['booking']['data']['room']['id'] : null;
         $selectedAddon = isset($_SESSION['booking']['data']['selected_addons']) ? $_SESSION['booking']['data']['selected_addons'] : [];
 
-        // Process POST data when a user submits a form (handling the form submission)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currentStep = $_POST['current_step'] ?? null;
 
@@ -225,11 +221,6 @@ class BookingController
                 $nights = $interval->days;
 
                 $room = Room::getRoomById($selectedRoomId);
-                // echo "<pre>";
-                // var_dump($room);
-                // var_dump($selectedRoomId);
-                // var_dump($_SESSION['booking']['data']);
-                // echo "</pre>";
                 $roomPrice = $room['price_per_night'] * $nights;
 
                 $addonsPrices = array_map(function ($addon) {
@@ -250,7 +241,6 @@ class BookingController
 
         $keywords = ['rezerva', 'camera', 'concediu'];
         $description = 'Rezerva acum o camera pentru urmatorul tau concediu!';
-        // $stepper = __DIR__ . '/../views/steps/stepper.php';
         $stepper = renderStepper($step);
 
         require __DIR__ . '/../views/layout.php';
