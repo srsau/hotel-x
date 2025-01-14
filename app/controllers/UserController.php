@@ -143,8 +143,9 @@ class UserController
 
     public function logout()
     {
-        session_destroy();
-        header('Location: /?logged_out=true');
+        session_regenerate_id(true);
+        session_destroy();        
+        header('Location: /');
         exit();
     }
 
