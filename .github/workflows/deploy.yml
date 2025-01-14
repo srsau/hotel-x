@@ -34,6 +34,8 @@ jobs:
           echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> /var/www/html/.env
           echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> /var/www/html/.env
           echo "RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}" >> /var/www/html/.env
+          echo "DB_DAW_USER=${{ secrets.DB_DAW_USER }}" >> /var/www/html/.env
+          echo "DB_DAW_PASS=${{ secrets.DB_DAW_PASS }}" >> /var/www/html/.env
           EOF
 
       # Step 4: Deploy new files to VM
