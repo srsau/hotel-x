@@ -281,6 +281,10 @@ class BookingController
             return 'End date cannot be before start date.';
         }
 
+        if ($startDateTime == $endDateTime) {
+            return 'Check-in date and check-out date cannot be the same.';
+        }
+
         return true;
     }
 

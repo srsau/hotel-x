@@ -23,11 +23,8 @@ function loadEnv($filePath) {
 
     return true;
 }
-
-// Load the .env file if it exists
 loadEnv(__DIR__ . '/.env');
 
-// Your existing autoloader code
 spl_autoload_register(function ($class) {
     $builtInClasses = [
         'DOMDocument',

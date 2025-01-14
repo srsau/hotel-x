@@ -4,6 +4,6 @@
 return [
     'host' => '127.0.0.1',
     'dbname' => 'hotel',
-    'user' => 'dawdbuser',
-    'password' => 'daw2025',
+    'user' => getenv('DB_USER'),
+    'password' => getenv('DB_PASS'),
 ];
