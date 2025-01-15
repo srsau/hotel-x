@@ -37,10 +37,11 @@
             <p class="my-2"><strong>Capacitate:</strong> <?php echo htmlspecialchars($room['capacity']); ?> persoane</p>
             <p class="my-2"><strong>Etaj:</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
             <p class="my-2"><strong>Facilități:</strong> <?php echo isset($room['facilities']) ? htmlspecialchars(implode(', ', $room['facilities'])) : 'N/A'; ?></p>
-                <p class="my-2"><strong>Camere disponibile in prezent:</strong> <?= htmlspecialchars($room['available_rooms']); ?> </p>
+
+                    <p class="my-2"><strong>Camere disponibile in prezent:</strong> <?= htmlspecialchars($room['available_rooms_val']); ?> </p>
             <div class="text-center mt-4">
                 <?php 
-                if ($room['available_rooms'] >= 1): ?>
+                if ($room['available_rooms_val'] >= 1): ?>
                     <a href="/initializeBooking?room_id=<?= $room['id']; ?>" class="btn btn-primary">Rezervă acum</a>
                     <?php endif; ?>
             </div>

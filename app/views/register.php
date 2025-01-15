@@ -1,4 +1,15 @@
 <form method="POST" action="/register">
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger" id="error-message">
+            <?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success" id="success-message">
+            <?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
+        </div>
+    <?php endif; ?>
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
     <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" class="form-control" id="email" name="email" required>

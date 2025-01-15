@@ -25,10 +25,9 @@ class RoomController
 
             $room['images'] = json_decode($room['images'], true);
             $room['facilities'] = Room::getRoomFacilities($roomId);
-
-            if (isset($_SESSION['user']['id'])) {
-                $room['available_rooms'] = Room::getCurrentAvailableRoomsCount($roomId);
-            }
+            
+            $room['available_rooms_val'] = Room::getCurrentAvailableRoomsCount($roomId);
+         
 
             $title = 'Room Details - ' . htmlspecialchars($room['name']);
             $view = __DIR__ . '/../views/room_details.php';

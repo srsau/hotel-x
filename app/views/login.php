@@ -1,7 +1,7 @@
 <form method="POST" action="/login">
-    <?php if (isset($error)): ?>
+    <?php if (isset($_SESSION['error'])): ?>
         <div class="alert alert-danger" id="error-message">
-            <?php echo htmlspecialchars($error); ?>
+            <?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
         </div>
     <?php endif; ?>
     <div class="mb-3">

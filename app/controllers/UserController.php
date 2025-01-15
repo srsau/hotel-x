@@ -28,12 +28,33 @@ class UserController
             exit();
         }
 
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-            $name = $_POST['name'];
-            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-            $preferred_currency = $_POST['preferred_currency'];
+            $csrfToken = $_POST['csrf_token'] ?? null;
+
+            if (!Csrf::validateToken($csrfToken)) {
+                $_SESSION['error'] = "Invalid CSRF token.";
+                header('Location: /register');
+                exit();
+            }
+
+            $email = $_POST['email'] ?? null;
+            $name = $_POST['name'] ?? null;
+            $password = $_POST['password'] ?? null;
+            $preferred_currency = $_POST['preferred_currency'] ?? null;
+
+            if (!$email || !$name || !$password || !$preferred_currency) {
+                $_SESSION['error'] = "All fields are required.";
+                header('Location: /register');
+                exit();
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['error'] = "Invalid email format.";
+                header('Location: /register');
+                exit();
+            }
+
+            $password = password_hash($password, PASSWORD_BCRYPT);
             $verification_code = bin2hex(random_bytes(16));
 
             $user_id = User::create($email, $name, $password, $preferred_currency);
@@ -42,10 +63,9 @@ class UserController
 
             $this->sendVerificationEmail($email, $verification_code);
 
-            $message = "Registration successful! Please check your email to verify your account.";
-            $title = 'Registration Successful';
-            $view = __DIR__ . '/../views/message.php';
-            require __DIR__ . '/../views/layout.php';
+            $_SESSION['success'] = "Registration successful! Please check your email to verify your account.";
+            header('Location: /register');
+            exit();
         } else {
             $currencies = getCurrencies();
             $view = __DIR__ . '/../views/register.php';
@@ -91,28 +111,29 @@ class UserController
             exit();
         }
 
-      
-
         $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $csrfToken = $_POST['csrf_token'] ?? null;
 
             if (!Csrf::validateToken($csrfToken)) {
-                $error = "Invalid csrf token.";
-                $title = 'Login Failed';
-                $view = __DIR__ . '/../views/login.php';
-                require __DIR__ . '/../views/layout.php';
-                return;
+                $_SESSION['error'] = "Invalid CSRF token.";
+                header('Location: /login');
+                exit();
             }
 
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+            $email = $_POST['email'] ?? null;
+            $password = $_POST['password'] ?? null;
+
+            if (!$email || !$password) {
+                $_SESSION['error'] = "All fields are required.";
+                header('Location: /login');
+                exit();
+            }
 
             $user = User::findByEmail($email);
 
             if ($user && password_verify($password, $user['password'])) {
                 if ($user['verified'] == 1) {
-                    // session_regenerate_id(true);
                     $_SESSION['user'] = [
                         'id' => $user['id'],
                         'email' => $user['email'],
@@ -130,15 +151,19 @@ class UserController
                         exit();
                     }
                 } else {
-                    $error = "Please verify your email before logging in.";
+                    $_SESSION['error'] = "Please verify your email before logging in.";
+                    header('Location: /login');
+                    exit();
                 }
             } else {
-                $error = "Invalid credentials";
+                $_SESSION['error'] = "Invalid credentials.";
+                header('Location: /login');
+                exit();
             }
+        } else {
+            $view = __DIR__ . '/../views/login.php';
+            require __DIR__ . '/../views/layout.php';
         }
-        $title = 'Login';
-        $view = __DIR__ . '/../views/login.php';
-        require __DIR__ . '/../views/layout.php';
     }
 
     public function logout()
